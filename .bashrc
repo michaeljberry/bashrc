@@ -72,22 +72,15 @@ In MySQL:
   Executes commands to create a database
   Executes command to create a user
   Grants user all privileges on newly created database for all hosts
-
+  *Optional (This displays the list of databases and should now include the newly created database)
+  *Just add this command after the `GRANT ALL ON` command:
+        SHOW DATABASES;
 COMMENT
     
     winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     CREATE DATABASE IF NOT EXISTS '$1'_testing COLLATE utf8_general_ci;
     CREATE USER IF NOT EXISTS '"'"'$1'"'"'@'"'"'%'"'"' IDENTIFIED BY '"'"'$1'"'"';
     GRANT ALL ON '$1'_testing.* TO '"'"'$1'"'"'@'"'"'%'"'"';
-    
-    
-<<"COMMENT"
-
-Optional (This displays the list of databases and should now include the newly created database): 
-show databases;
-
-COMMENT
-    
     ";'
     
     # Change host in new Laravel app's .env to Laradock host 'mysql'
