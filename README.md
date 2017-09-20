@@ -1,6 +1,6 @@
 ## This is an bash script that automates everything that I feel is needed for a new Laravel project.
 
-**&ast;&ast;Credit for the inspiration for this script goes to Jeffrey Way.**
+**&ast;&ast;Credit for the inspiration for this script goes to Jeffrey Way.&ast;&ast;**
 
 ### Explanation for why
 **TL;DR**
