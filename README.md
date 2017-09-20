@@ -41,7 +41,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
     2. `@param2` - **Options as follows:**
         1. GitHub Personal Access Token - Must have full repo scope authorization.
         2. `ng` - This will NOT intialize git or create a repo on GitHub.com. Stands for 'No Git'
-    3. `@param3` - **Optional** Indicates a private GitHub repo should be created.
+    3. `@param3` - **Optional:** Indicates a private GitHub repo should be created.
 3. `setup todo 1234567890qwertyuiop`
 
 This one command will setup these items:
