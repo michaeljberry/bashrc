@@ -1,6 +1,6 @@
 ## This is an bash script that automates everything that I feel is needed for a new Laravel project.
 
-**&ast;&ast;Credit for the inspiration for this script goes to Jeffrey Way.&ast;&ast;**
+**&ast;&ast;Credit for the inspiration for this script goes to [Jeffrey Way][7].&ast;&ast;**
 
 ### Explanation for why
 **TL;DR**
@@ -67,3 +67,4 @@ This one command will:
 [4]: https://git-scm.com/download/win
 [5]: https://github.com/michaeljberry/bashrc/blob/master/.bashrc
 [6]: http://laradock.io/
+[7]: https://github.com/JeffreyWay
