@@ -35,7 +35,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
 
 ### How it functions
 
-##### To setup a new Laravel project
+#### To setup a new Laravel project
 1. Open Git Bash for Windows
 2. Example: `setup {projectname} {Github PAT}||{ng}`
 3. `setup todo 1234567890qwertyuiop`
@@ -46,10 +46,10 @@ This one command will setup these items:
 - New MySQL database (`todo_testing`)
 - New MySQL user (`todo`)
 - Grant all privileges to new user (`todo`)
-- Configure `.env` with new `DB_HOST`, `DB_DATABASE`, `DB_USERNAME` information
+- Configure `.env` with new `DB_HOST` (`mysql` - from Laradock), `DB_DATABASE` (`todo_testing`), `DB_USERNAME` (`todo`) information
 - Open IntelliJ to new `todo` project
 
-##### To teardown a Laravel project
+#### To teardown a Laravel project
 1. Open Git Bash for Windows
 2. Example: `teardown {projectname} {Gihub PAT}||{ng}`
 3. `teardown todo 0987654321poiuytrewq`
