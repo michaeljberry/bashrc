@@ -2,6 +2,8 @@
 
 **&ast;&ast;The inspiration to build this script came from trying to keep up with [Jeffrey Way][7]'s tutorials on [Laracasts.com][1].&ast;&ast;**
 
+**&ast;&ast;This is for local development only. DO NOT USE IN PRODUCTION ENVIRONMENT.&ast;&ast;**
+
 ### Explanation for why
 **TL;DR**
 **Because it made a lot of sense**
