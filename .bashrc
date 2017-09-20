@@ -49,8 +49,21 @@ else
         # Create the initial commit
         git commit -m "First commit"
         
-        # Use Github's API to create a new repo on github.com with the 1st @param as its name and 2nd @param as access_token
-        curl https://api.github.com/user/repos?access_token=$2 -d '{"name":"'$1'"}'
+<<"COMMENT"
+
+Concatenate JSON parameters. 
+Set repo name with the 1st @param and if @param3 is set and equals 'p', the create repo as a private repo.
+        
+COMMENT
+
+        json='{"name":"'$1'"'
+        if [ $# -eq 3 ] && [ "$3" = "p" ]; then
+            json="$json,\"private\":true"
+        fi
+        json="$json}"
+        
+        # Use Github's API to create a new repo on github.com  and 2nd @param as access_token
+        curl https://api.github.com/user/repos?access_token=$2 -d $json
         
         # Add the newly created github.com repo as the origin to the local repo
         git remote add origin https://github.com/{username}/$1.git
