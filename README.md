@@ -1,6 +1,6 @@
 ## This is an bash script that automates everything that I feel is needed for a new Laravel project.
 
-**&ast;&ast;Credit for the inspiration for this script goes to [Jeffrey Way][7].&ast;&ast;**
+**&ast;&ast;The inspiration to build this script came from trying to keep up with [Jeffrey Way][7]'s tutorials on [Laracasts.com][1].&ast;&ast;**
 
 ### Explanation for why
 **TL;DR**
@@ -36,12 +36,17 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
 
 #### To setup a new Laravel project
 1. Open Git Bash for Windows
-2. Example: `setup {projectname} {Github PAT}||{ng}`
+2. Example: `setup @param1 @param2 @param3`
+    1. `@param1` - projectname
+    2. `@param2` - **Options as follows:**
+        1. GitHub Personal Access Token - Must have full repo scope authorization.
+        2. `ng` - This will NOT intialize git or create a repo on GitHub.com. Stands for 'No Git'
+    3. `@param3` - **Optional** Indicates a private GitHub repo should be created.
 3. `setup todo 1234567890qwertyuiop`
 
 This one command will setup these items:
-- Laravel app called `todo` (@param1)
-- New repo in your Github.com account - It will use the provided Github.com Personal Access Token (@param2) to authenticate
+- Laravel app called `todo` (`@param1`)
+- New repo in your GitHub.com account - It will use the provided GitHub.com Personal Access Token (`@param2`) to authenticate
 - New MySQL database (`todo_testing`)
 - New MySQL user (`todo`)
 - Grant all privileges to new user (`todo`)
@@ -50,12 +55,16 @@ This one command will setup these items:
 
 #### To teardown a Laravel project
 1. Open Git Bash for Windows
-2. Example: `teardown {projectname} {Gihub PAT}||{ng}`
+2. Example: `teardown @param1 @param2`
+    1. `@param1` - projectname
+    2. `@param2` - **Options as follows:**
+        1. GitHub Personal Access Token - Must have `delete_repo` scope authorization.
+        2. `ng` - This will NOT delete the repo on GitHub.com. Stands for 'No GitHub'
 3. `teardown todo 0987654321poiuytrewq`
 
 This one command will:
 - Delete Laravel app called `todo` (`@param1`)
-- Delete Github.com repo on your account - It will use the provided Github.com Personal Access Token (`@param2`) to authenticate
+- Delete GitHub.com repo on your account - It will use the provided GitHub.com Personal Access Token (`@param2`) to authenticate
 - Drop MySQL database (`todo`)
 - Drop MySQL user (`todo`)
 
