@@ -20,7 +20,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
 - Windows 10 Education
 - Hyper V (enabled in BIOS)
 - [Docker for Windows][2]
-- [Acrylic DNS Proxy][3] - Allows for dynamic host configuration as Windows' normal `hosts` file doesn't allow dynamic hosts.
+- [Acrylic DNS Proxy][3] - Allows for dynamic host configuration as Windows' normal `C:\Windows\System32\drivers\etc\hosts` file doesn't allow dynamic hosts.
   - `AcrylicHosts.txt` - At the very bottom:
   - 127.0.0.1 &ast;.dev
 - [Git Bash for Windows][4]
