@@ -121,7 +121,7 @@ setup todo 0987654321poiuytrewq
 COMMENT
 
 # If 2nd parameter is empty and doesn't equal 'ng', then we need a Github token
-takedown(){
+teardown(){
 if [ -z "$2" ] && [ "$2" != "ng" ]; then
     echo "Please enter your Github delete authorization token."
 else
