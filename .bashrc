@@ -85,7 +85,7 @@ COMMENT
     winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     CREATE DATABASE IF NOT EXISTS '$1'_testing COLLATE utf8_general_ci;
     CREATE USER IF NOT EXISTS '"'"'$1'"'"'@'"'"'%'"'"' IDENTIFIED BY '"'"'$1'"'"';
-    GRANT ALL ON '$1'_testing.* TO '"'"'$1'"'"'@'"'"'%'"'"';
+    GRANT ALL PRIVILEGES ON '$1'_testing.* TO '"'"'$1'"'"'@'"'"'%'"'"';
     ";'
     
     # Change host in new Laravel app's .env to Laradock host 'mysql'
@@ -96,6 +96,9 @@ COMMENT
     
     # Change user in new Laravel app's .env to newly created user
     sed -i -e "s/DB_USERNAME=homestead/DB_USERNAME=$1/g" "/c/Users/Michael Berry/Desktop/Dev/$1/.env"
+    
+    # Change passowrd in new Laravel app's .env to newly created password
+    sed -i -e "s/DB_PASSWORD=secret/DB_PASSWORD=$1/g" ~/Desktop/Dev/$1/.env
     
     #Opens IntelliJ Idea to new project   
     if [ -d "$1" ]; then
