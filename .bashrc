@@ -63,17 +63,17 @@ else
     cd ~/Desktop/Dev/laradock
     
     
-    <<"COMMENT" 
-    
-    Windows Git Bash users must include 'winpty' at beginning to create sub-shell
-    Exports MySQL password into mysql shell
-    Logins as 'root' user
-    In MySQL:
-      Executes commands to create a database
-      Executes command to create a user
-      Grants user all privileges on newly created database for all hosts
-      
-    COMMENT
+<<"COMMENT" 
+
+Windows Git Bash users must include 'winpty' at beginning to create sub-shell
+Exports MySQL password into mysql shell
+Logins as 'root' user
+In MySQL:
+  Executes commands to create a database
+  Executes command to create a user
+  Grants user all privileges on newly created database for all hosts
+
+COMMENT
     
     winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     CREATE DATABASE IF NOT EXISTS '$1'_testing COLLATE utf8_general_ci;
@@ -81,12 +81,12 @@ else
     GRANT ALL ON '$1'_testing.* TO '"'"'$1'"'"'@'"'"'%'"'"';
     
     
-    <<"COMMENT"
-    
-    Optional (This displays the list of databases and should now include the newly created database): 
-    show databases;
-    
-    COMMENT
+<<"COMMENT"
+
+Optional (This displays the list of databases and should now include the newly created database): 
+show databases;
+
+COMMENT
     
     ";'
     
@@ -100,13 +100,13 @@ else
     sed -i -e "s/DB_USERNAME=homestead/DB_USERNAME=$1/g" "/c/Users/Michael Berry/Desktop/Dev/$1/.env"
     
     
-    <<"COMMENT"
-    
-    If you use IntelliJ or one of their other applications (PHPStorm, WebStorm, etc.), 
-    this will open the new Laravel app as a new project. If 1st @param's directory
-    exists, then proceed to open in IntelliJ.
-    
-    COMMENT
+<<"COMMENT"
+
+If you use IntelliJ or one of their other applications (PHPStorm, WebStorm, etc.), 
+this will open the new Laravel app as a new project. If 1st @param's directory
+exists, then proceed to open in IntelliJ.
+
+COMMENT
     
     if [ -d "$1" ]; then
         echo "Opening IntelliJ project for $1"
@@ -150,16 +150,16 @@ else
         # cd to laradock folder
         cd ~/Desktop/Dev/laradock
         
-        <<"COMMENT" 
-    
-          Windows Git Bash users must include 'winpty' at beginning to create sub-shell
-          Exports MySQL password into mysql shell
-          Logins as 'root' user
-          In MySQL:
-            Executes commands to delete the database
-            Executes command to delete the user
-      
-        COMMENT
+<<"COMMENT" 
+
+  Windows Git Bash users must include 'winpty' at beginning to create sub-shell
+  Exports MySQL password into mysql shell
+  Logins as 'root' user
+  In MySQL:
+    Executes commands to delete the database
+    Executes command to delete the user
+
+COMMENT
     
         winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
         DROP DATABASE IF EXISTS '$1'_testing;
