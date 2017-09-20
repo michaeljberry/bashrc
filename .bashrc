@@ -7,11 +7,9 @@ alias idea="\"/c/Program Files (x86)/JetBrains/IntelliJ IDEA 2017.1/bin/idea64.e
 
 <<"COMMENT"
 
-For the automated setup of local files, Laravel application, Github repo, database including user, 
-configuration of Laravel .env file and opening of code editor to the newly created project.
-
-@param string project-name
-@param string Github Personal Access Token with full repo scope OR 'ng' (No Github)
+@param1 string project-name
+@param2 string Github Personal Access Token with full repo scope OR 'ng' (No Git)
+@param3 string p
 
 Example:
 setup todo 1234567890qwertyuiop
@@ -49,13 +47,7 @@ else
         # Create the initial commit
         git commit -m "First commit"
         
-<<"COMMENT"
-
-Concatenate JSON parameters. 
-Set repo name with the 1st @param and if @param3 is set and equals 'p', the create repo as a private repo.
-        
-COMMENT
-
+        #Assemble JSON string for curl request
         json='{"name":"'$1'"'
         if [ $# -eq 3 ] && [ "$3" = "p" ]; then
             json="$json,\"private\":true"
@@ -105,15 +97,7 @@ COMMENT
     # Change user in new Laravel app's .env to newly created user
     sed -i -e "s/DB_USERNAME=homestead/DB_USERNAME=$1/g" "/c/Users/Michael Berry/Desktop/Dev/$1/.env"
     
-    
-<<"COMMENT"
-
-If you use IntelliJ or one of their other applications (PHPStorm, WebStorm, etc.), 
-this will open the new Laravel app as a new project. If 1st @param's directory
-exists, then proceed to open in IntelliJ.
-
-COMMENT
-    
+    #Opens IntelliJ Idea to new project   
     if [ -d "$1" ]; then
         echo "Opening IntelliJ project for $1"
         idea ~/Desktop/Dev/$1
@@ -123,13 +107,11 @@ fi
 
 <<"COMMENT"
 
-For the deletion and removal of a project from local files, Github and database.
-
-@param string project-name
-@param string Github Personal Access Token with delete_repo scope
+@param1 string project-name
+@param2 string Github Personal Access Token with delete_repo scope or 'ng' (No GitHub)
 
 Example:
-setup todo 0987654321poiuytrewq
+teardown todo 0987654321poiuytrewq
 
 COMMENT
 
