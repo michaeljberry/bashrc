@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# Change to your dev location
+alias dev="cd ~/Desktop/Dev"
+
+# For use later to automatically open code editor to new project
+alias idea="\"/c/Program Files (x86)/JetBrains/IntelliJ IDEA 2017.1/bin/idea64.exe\""
+
 setuplaravel(){
     # setup new Laravel app
     laravel new $1
@@ -35,7 +42,7 @@ setupgithub(){
         curl https://api.github.com/user/repos?access_token=$2 -d $json
 
         # Add the newly created github.com repo as the origin to the local repo
-        git remote add origin https://github.com/michaeljberry/$1.git
+        git remote add origin https://github.com/{username}/$1.git
 
         # Push local repo to github.com repo
         git push origin master
