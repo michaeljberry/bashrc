@@ -26,7 +26,10 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
   - `AcrylicHosts.txt` - At the very bottom:
   - 127.0.0.1 &ast;.dev
 - [Git Bash for Windows][4]
-  - Include the scripts in [.bashrc][5] in your user profile `C:\Users\{username}\.bashrc` file. Be sure to change the necessary 
+  - Save `laravelsetup.sh` in `C:\Users\{username}`.
+  - Add the line `source ~/laravelsetup.sh` to [.bashrc][5] in your user folder `C:\Users\{username}\`. Be sure to change the necessary variables in `laravelsetup.sh`:
+      - `devfolder`
+      - GitHub `{username}`
   - When Git Bash for Windows opens, it automatically imports your `C:\Users\{username}\.bashrc` file as aliases that are available for use within the Git Bash shell.
 - [Laradock][6]
   - `C:\folder\where\you\installed\laradock\nginx\sites\laravel.conf` 
