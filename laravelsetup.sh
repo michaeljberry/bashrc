@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-# Change to your dev location
-alias dev="cd ~/Desktop/Dev"
+# Change directory to match your dev location
+devfolder="~/Desktop/Dev"
 
-# For use later to automatically open code editor to new project
+
+alias lara="cd $devfolder/laradock"
+alias dev="cd $devfolder"
+
+# Change as needed to match your code editor's location
 alias idea="\"/c/Program Files (x86)/JetBrains/IntelliJ IDEA 2017.1/bin/idea64.exe\""
 
 setuplaravel(){
@@ -50,7 +54,7 @@ setupgithub(){
 }
 setupdatabase(){
     # cd to laradock folder
-    cd ~/Desktop/Dev/laradock
+    lara
 
 <<"COMMENT"
 
@@ -76,17 +80,22 @@ COMMENT
 }
 
 configurelaravel(){
+
+    dev
+
+    cd $1
+
     # Change host in new Laravel app's .env to Laradock host 'mysql'
-    sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mysql/g" ~/Desktop/Dev/$1/.env
+    sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mysql/g" .env
 
     # Change database in new Laravel app's .env to newly created database
-    sed -i -e "s/DB_DATABASE=homestead/DB_DATABASE=$1_testing/g" ~/Desktop/Dev/$1/.env
+    sed -i -e "s/DB_DATABASE=homestead/DB_DATABASE=$1_testing/g" .env
 
     # Change user in new Laravel app's .env to newly created user
-    sed -i -e "s/DB_USERNAME=homestead/DB_USERNAME=$1/g" ~/Desktop/Dev/$1/.env
+    sed -i -e "s/DB_USERNAME=homestead/DB_USERNAME=$1/g" .env
 
     # Change passowrd in new Laravel app's .env to newly created password
-    sed -i -e "s/DB_PASSWORD=secret/DB_PASSWORD=$1/g" ~/Desktop/Dev/$1/.env
+    sed -i -e "s/DB_PASSWORD=secret/DB_PASSWORD=$1/g" .env
 }
 
 openeditor(){
@@ -94,7 +103,7 @@ openeditor(){
     #Opens IntelliJ Idea to new project
     if [ -d "$1" ]; then
         echo "Opening IntelliJ project for $1"
-        idea ~/Desktop/Dev/$1
+        idea $1
     fi
 }
 
@@ -115,17 +124,18 @@ if [ -z "$2" ] && [ "$2" != "ng" ]; then
 else
     # cd to dev location
     dev
-    mkdir $1
 
-    #setuplaravel $1
+    #mkdir $1
 
-    #setupgithub $1 $2
+    setuplaravel $1
 
-    #setupdatabase $1
+    setupgithub $1 $2
 
-    #configurelaravel $1
+    setupdatabase $1
 
-    #openeditor $1
+    configurelaravel $1
+
+    openeditor $1
 fi
 }
 
@@ -156,11 +166,11 @@ else
 
         # If a Github repo should be deleted, delete the repo...
         if [ "$2" != "ng" ]; then
-            curl -X DELETE -H "Authorization: token $2" https://api.github.com/repos/michaeljberry/$1
+            curl -X DELETE -H "Authorization: token $2" https://api.github.com/repos/{username}/$1
         fi
 
         # cd to laradock folder
-        cd ~/Desktop/Dev/laradock
+        lara
 
 <<"COMMENT"
 
@@ -177,6 +187,8 @@ COMMENT
         DROP DATABASE IF EXISTS '$1'_testing;
         DROP USER IF EXISTS '"'"'$1'"'"';
         ";'
+
+        dev
     else
         echo "The directory $1 doesn\'t exist"
     fi
