@@ -3,9 +3,14 @@
 # Change directory to match your dev location
 devfolder="~/Desktop/Dev"
 
+# Github username
+github="michaeljberry"
 
-alias lara="cd $devfolder/laradock"
+# Alias to change directory to devfolder
 alias dev="cd $devfolder"
+
+# Alias to change directory to laradock folder
+alias lara="cd $devfolder/laradock"
 
 # Change as needed to match your code editor's location
 alias idea="\"/c/Program Files (x86)/JetBrains/IntelliJ IDEA 2017.1/bin/idea64.exe\""
@@ -19,6 +24,11 @@ setuplaravel(){
 
     # Generate the APP_KEY in your .env file
     php artisan key:generate
+}
+
+teardownlaravel(){
+    # Delete the files...
+    rm -rf $1
 }
 
 setupgithub(){
@@ -37,7 +47,7 @@ setupgithub(){
 
         #Assemble JSON string for curl request
         json='{"name":"'$1'"'
-        if [ $# -eq 3 ] && [ "$3" = "p" ]; then
+        if [[ "$3" == *"p"* ]]; then
             json="$json,\"private\":true"
         fi
         json="$json}"
@@ -46,12 +56,20 @@ setupgithub(){
         curl https://api.github.com/user/repos?access_token=$2 -d $json
 
         # Add the newly created github.com repo as the origin to the local repo
-        git remote add origin https://github.com/{username}/$1.git
+        git remote add origin https://github.com/$github/$1.git
 
         # Push local repo to github.com repo
         git push origin master
     fi
 }
+
+teardowngithub(){
+    # If a Github repo should be deleted, delete the repo...
+    if [ "$2" != "ng" ]; then
+        curl -X DELETE -H "Authorization: token $2" https://api.github.com/repos/$github/$1
+    fi
+}
+
 setupdatabase(){
     # cd to laradock folder
     lara
@@ -79,11 +97,34 @@ COMMENT
     ";'
 }
 
-configurelaravel(){
+teardowndatabase(){
+    # cd to laradock folder
+    lara
+
+<<"COMMENT"
+
+  Windows Git Bash users must include 'winpty' at beginning to create sub-shell
+  Exports MySQL password into mysql shell
+  Logins as 'root' user
+  In MySQL:
+    Executes commands to delete the database
+    Executes command to delete the user
+
+COMMENT
+
+    winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
+    DROP DATABASE IF EXISTS '$1'_testing;
+    DROP USER IF EXISTS '"'"'$1'"'"';
+    ";'
+}
+
+configureenv(){
 
     dev
 
     cd $1
+
+    echo "Configuring .env"
 
     # Change host in new Laravel app's .env to Laradock host 'mysql'
     sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mysql/g" .env
@@ -96,6 +137,50 @@ configurelaravel(){
 
     # Change passowrd in new Laravel app's .env to newly created password
     sed -i -e "s/DB_PASSWORD=secret/DB_PASSWORD=$1/g" .env
+}
+
+configuretest(){
+    # cd to devfolder
+    dev
+
+    cd $1
+
+    if [[ "$2" == *"t"* ]]; then
+        echo "Configuring phpunit.xml"
+
+        sed -i -e '/<env name=\"APP_ENV\" value=\"testing\"\/>/a\
+        <env name=\"DB_CONNECTION\" value=\"sqlite\"\/>\
+        <env name=\"DB_DATABASE\" value=\":memory:\"\/>' phpunit.xml
+
+        echo "Creating testing helper functions"
+
+        mkdir tests/Utilities
+
+        touch tests/Utilities/functions.php
+
+        cat << EOF > tests/Utilities/functions.php
+<?php
+
+function create(\$class, \$attributes = [], \$times = null)
+{
+    return factory(\$class, \$times)->create(\$attributes);
+}
+
+function make(\$class, \$attributes = [], \$times = null)
+{
+    return factory(\$class, \$times)->make(\$attributes);
+}
+EOF
+
+        echo "Editing composer.json to require new helper functions file"
+
+        perl -0777 -pi -e 's/\"tests\/\"\n\s*\}/\"tests\/\"\n        \},\n        \"files\"\: \[\"tests\/utilities\/functions.php\"\]/' composer.json
+
+        echo "Dumping and reloading composer dependencies"
+
+        composer dump-autoload
+
+    fi
 }
 
 openeditor(){
@@ -125,15 +210,15 @@ else
     # cd to dev location
     dev
 
-    #mkdir $1
-
     setuplaravel $1
 
-    setupgithub $1 $2
+    setupgithub $1 $2 $3
 
     setupdatabase $1
 
-    configurelaravel $1
+    configureenv $1
+
+    configuretest $1 $3
 
     openeditor $1
 fi
@@ -161,32 +246,11 @@ else
     if [ -d "$1" ]; then
         echo "The directory $1 exists."
 
-        # Delete the files...
-        rm -rf $1
+        teardownlaravel $1
 
-        # If a Github repo should be deleted, delete the repo...
-        if [ "$2" != "ng" ]; then
-            curl -X DELETE -H "Authorization: token $2" https://api.github.com/repos/{username}/$1
-        fi
+        teardowngithub $1 $2
 
-        # cd to laradock folder
-        lara
-
-<<"COMMENT"
-
-  Windows Git Bash users must include 'winpty' at beginning to create sub-shell
-  Exports MySQL password into mysql shell
-  Logins as 'root' user
-  In MySQL:
-    Executes commands to delete the database
-    Executes command to delete the user
-
-COMMENT
-
-        winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
-        DROP DATABASE IF EXISTS '$1'_testing;
-        DROP USER IF EXISTS '"'"'$1'"'"';
-        ";'
+        teardowndatabase $1
 
         dev
     else
