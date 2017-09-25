@@ -1,4 +1,4 @@
-## This is an bash script that automates everything that I feel is needed for a new Laravel project.
+## This is a bash script that automates everything that I feel is needed for a new Laravel project.
 
 **&ast;&ast;The inspiration to build this script came from trying to keep up with [Jeffrey Way][7]'s tutorials on [Laracasts.com][1].&ast;&ast;**
 
