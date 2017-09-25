@@ -46,16 +46,47 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
     2. `@param2` - **Options as follows:**
         1. GitHub Personal Access Token - Must have full repo scope authorization.
         2. `ng` - This will NOT intialize git or create a repo on GitHub.com. Stands for 'No Git'
-    3. `@param3` - **Optional:** Indicates a private GitHub repo should be created.
-3. `setup todo 1234567890qwertyuiop`
+    3. `@param3` - **Options as follows:** (Include as a single, undelimited string)
+        1. `p` - Indicates a private GitHub repo should be created.
+        2. `t` - Setup testing. These are the settings that are setup with this argument:
+            1. `phpunit.xml` - Add these lines:
+                1. `<env name="DB_CONNECTION" value="sqlite"/>`
+                2. `<env name="DB_DATABASE" value=":memory:"/>`
+            2. `tests/Utilities/functions.php` - These are helper functions
+                1. 
+                ```php
+                function create(\$class, \$attributes = [], \$times = null)
+                {
+                    return factory(\$class, \$times)->create(\$attributes);
+                }
+                
+                function make(\$class, \$attributes = [], \$times = null)
+                {
+                    return factory(\$class, \$times)->make(\$attributes);
+                }
+                ```
+                
+            3. `composer.json` - Edit line and append line
+                1. 
+                ```json
+                "autoload-dev": {
+                    "psr-4": {
+                        "Tests\\": "tests/"
+                    }, // Line edited
+                    "files": ["tests/utilities/functions.php"] // Line added
+                },
+                ```
+                
+3. `setup todo 1234567890qwertyuiop pt`
 
 This one command will setup these items:
 - Laravel app called `todo` (`@param1`)
-- New repo in your GitHub.com account - It will use the provided GitHub.com Personal Access Token (`@param2`) to authenticate
+- New *private* repo in your GitHub.com account - It will use the provided GitHub.com Personal Access Token (`@param2`) to authenticate
 - New MySQL database (`todo_testing`)
 - New MySQL user (`todo`)
 - Grant all privileges to new user (`todo`)
 - Configure `.env` with new `DB_HOST` (`mysql` - from Laradock), `DB_DATABASE` (`todo_testing`), `DB_USERNAME` (`todo`) information
+- Setup common testing configurations
 - Open IntelliJ to new `todo` project
 
 #### To teardown a Laravel project
