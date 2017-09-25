@@ -53,7 +53,9 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
                 1. `<env name="DB_CONNECTION" value="sqlite"/>`
                 2. `<env name="DB_DATABASE" value=":memory:"/>`
             2. `tests/Utilities/functions.php` - These are helper functions
+                
                 1. 
+                
                 ```php
                 function create(\$class, \$attributes = [], \$times = null)
                 {
@@ -67,7 +69,9 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
                 ```
                 
             3. `composer.json` - Edit line and append line
+                
                 1. 
+                
                 ```json
                 "autoload-dev": {
                     "psr-4": {
