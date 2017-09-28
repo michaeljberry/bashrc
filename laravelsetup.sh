@@ -89,7 +89,7 @@ In MySQL:
 
 COMMENT
 
-    winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
+    winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     CREATE DATABASE IF NOT EXISTS '$1'_testing COLLATE utf8_general_ci;
     CREATE USER IF NOT EXISTS '"'"'$1'"'"'@'"'"'%'"'"' IDENTIFIED BY '"'"'$1'"'"';
     GRANT ALL PRIVILEGES ON '$1'_testing.* TO '"'"'$1'"'"'@'"'"'%'"'"' IDENTIFIED BY '"'"'$1'"'"';
@@ -112,22 +112,23 @@ teardowndatabase(){
 
 COMMENT
 
-    winpty docker-compose exec mysql sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
+    winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     DROP DATABASE IF EXISTS '$1'_testing;
     DROP USER IF EXISTS '"'"'$1'"'"';
     ";'
 }
 
 configureenv(){
-
+    # cd to dev folder
     dev
 
+    # cd to new project folder
     cd $1
 
     echo "Configuring .env"
 
     # Change host in new Laravel app's .env to Laradock host 'mysql'
-    sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mysql/g" .env
+    sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mariadb/g" .env
 
     # Change database in new Laravel app's .env to newly created database
     sed -i -e "s/DB_DATABASE=homestead/DB_DATABASE=$1_testing/g" .env
@@ -140,9 +141,10 @@ configureenv(){
 }
 
 configuretest(){
-    # cd to devfolder
+    # cd to dev folder
     dev
 
+    # cd to new project folder
     cd $1
 
     if [[ "$2" == *"t"* ]]; then
@@ -184,7 +186,12 @@ EOF
 }
 
 openeditor(){
+    # cd to dev folder
     dev
+
+    # cd to new project folder
+    cd $1
+
     #Opens IntelliJ Idea to new project
     if [ -d "$1" ]; then
         echo "Opening IntelliJ project for $1"
@@ -207,7 +214,7 @@ setup(){
 if [ -z "$2" ] && [ "$2" != "ng" ]; then
     echo "Please enter your Github authorization token."
 else
-    # cd to dev location
+    # cd to dev folder
     dev
 
     setuplaravel $1
@@ -239,7 +246,7 @@ teardown(){
 if [ -z "$2" ]; then
     echo "Please enter your Github delete authorization token."
 else
-    # cd to dev location
+    # cd to dev folder
     dev
 
     # If the project directory exists, then...
@@ -252,6 +259,7 @@ else
 
         teardowndatabase $1
 
+        # cd to dev folder
         dev
     else
         echo "The directory $1 doesn\'t exist"
