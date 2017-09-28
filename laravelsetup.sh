@@ -215,14 +215,14 @@ openeditor(){
     # cd to dev folder
     dev
 
-    # cd to new project folder
-    cd $1
-
     #Opens IntelliJ Idea to new project
     if [ -d "$1" ]; then
 
         echo "Opening IntelliJ project for $1"
         idea $1
+
+        # cd to new project folder
+        cd $1
 
     fi
 
@@ -306,7 +306,7 @@ teardown(){
             echo "The directory $1 doesn\'t exist"
 
         fi
-        
+
     fi
 
 }
