@@ -22,6 +22,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
 - Windows 10 Education
 - Hyper V (enabled in BIOS)
 - [Docker for Windows][2]
+- [Visual Studio Code][8] -- It's awesome and it's free
 - [Acrylic DNS Proxy][3] - Allows for dynamic host configuration as Windows' normal `C:\Windows\System32\drivers\etc\hosts` file doesn't allow dynamic hosts.
   - `AcrylicHosts.txt` - At the very bottom:
   - 127.0.0.1 &ast;.dev
@@ -92,7 +93,7 @@ This one command will setup these items:
 - Grant all privileges to new user (`todo`)
 - Configure `.env` with new `DB_HOST` (`mysql` - from Laradock), `DB_DATABASE` (`todo_testing`), `DB_USERNAME` (`todo`) information
 - Setup common testing configurations
-- Open IntelliJ to new `todo` project
+- Open Visual Studio Code to new `todo` project
 
 #### To teardown a Laravel project
 1. Open Git Bash for Windows
@@ -118,3 +119,4 @@ This one command will:
 [5]: https://github.com/michaeljberry/bashrc/blob/master/.bashrc
 [6]: http://laradock.io/
 [7]: https://github.com/JeffreyWay
+[8]: https://code.visualstudio.com/
