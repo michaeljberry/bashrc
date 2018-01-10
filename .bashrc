@@ -1,4 +1,7 @@
 source ~/env.sh
+
+# I separated my normal aliases from the functions that I use to setup/tweak Laravel projects
+# Include the line below, only if you want to structure your aliases the same
 source ~/aliases.sh
 
 dev(){
