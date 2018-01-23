@@ -8,5 +8,5 @@ devfolder="${home}${rootdevfolder}"
 github="michaeljberry" # Your github username
 githubname="MichaelJBerry" # Your github username with proper capitalization
 fullname="Michael Berry"
-emailaddress="your email address"
-website="your website address"
+emailaddress="michael\@michaeljberry\.com"
+website="https\:\/\/michaeljberry\.com"

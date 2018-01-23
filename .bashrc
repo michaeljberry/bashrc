@@ -1,7 +1,4 @@
 source ~/env.sh
-
-# I separated my normal aliases from the functions that I use to setup/tweak Laravel projects
-# Include the line below, only if you want to structure your aliases the same
 source ~/aliases.sh
 
 dev(){
@@ -534,8 +531,6 @@ teardownLaravel(){
 
     project="$(inputIsSet "project" "$project")"
 
-    # dev
-
     project="$(validFolderName "$project" "project")"
 
     rm -rf $project
@@ -544,73 +539,106 @@ teardownLaravel(){
 
 #################
 #
-# @ tests
+# @tests
 #
-# setupGithu
+# gitJson
+# Result: Please type a valid project name:
+#
+# gitJson blah
+# Result: {"name":"blah"}
+#
+# gitJson blah tv
+# Result: {"name":"blah"}
+#
+# gitJson blah tvp
+# Result: {"name":"blah", "private":true}
 #################
 
-setupGithub(){
+gitJson(){
 
     project=$1
-    gitParameter=$2
-    options=$3
+    options=$2
 
-    # If a Github repo should be created
-    if [ "$configureGithub" = true ]; then
+    project="$(inputIsSet "project" "$project")"
 
-        printf "Initializing Git local and remote repos. \n"
+    #Assemble JSON string for curl request
+    json='{"name":"'$project'"'
 
-        touch .gitignore
+    if [[ "$options" == *"p"* ]]; then
 
-        cat << EOF > .gitignore
-/vendor
-.env
+        json="$json,\"private\":true"
 
+    fi
 
-EOF
+    json="$json}"
 
-        # Initialize local repo
-        git init
+    echo "$json"
 
-        # Add all files to repo
-        git add .
+}
 
-        # Create the initial commit
-        git commit -m "First commit"
+#################
+#
+# @tests
+#
+# gitVersioning
+# Result:
+#
+# gitVersioning p
+# Result:
+#
+# gitVersioning v
+# Result: Versioning...
+#################
 
-        #Assemble JSON string for curl request
-        json='{"name":"'$project'"'
+gitVersioning(){
 
-        if [[ "$options" == *"p"* ]]; then
+    options=$1
 
-            json="$json,\"private\":true"
+    #If 'v' is used in $options, then create version tag
+    if [[ "$options" == *"v"* ]]; then
 
-        fi
-
-        json="$json}"
-
-        # Use Github's API to create a new repo on github.com  and 2nd @param as access_token
-        curl https://api.github.com/user/repos?access_token=$gitParameter -d $json
-
-        # Add the newly created github.com repo as the origin to the local repo
-        git remote add origin https://github.com/$github/$project.git
-
-        #If 'v' is used in $options, then create version tag
-        if [[ "$options" == *"v"* ]]; then
-
-            printf "Versioning... \n"
-            git tag -a 0.0.1 -m "First version"
-            git push --set-upstream origin master
-            git push --tags
-
-        fi
-
-        # Push local repo to github.com repo
-        git push origin master
+        printf "Versioning... \n"
+        git tag -a 0.0.1 -m "First version"
+        git push --set-upstream origin master
+        git push --tags
 
     fi
 
 }
+
+#################
+#
+# @tests
+#
+# githubCommitMessage
+# Result: Please type a valid commit message name:
+#
+# githubCommitMessage "First Commit"
+# Result: First Commit
+#################
+
+githubCommitMessage(){
+
+    message=$1
+
+    message="$(inputIsSet "commit message" "$message")"
+
+    echo "$message"
+}
+
+#################
+#
+# @tests
+#
+# configureGithub
+# Result: Please enter your Github create authorization token or enter 'ng' to prevent Github syncronization:
+#
+# configureGithub ng
+# Result:
+#
+# configureGithub 12345567890123456asdf
+# Result: 12345567890123456asdf
+#################
 
 configureGithub(){
 
@@ -625,28 +653,200 @@ configureGithub(){
 
     fi
 
-    while [ "$configureGithub" != "true" ]; do
+    while [ -z "$gitParameter" ]; do
 
-        if [ -z "$gitParameter" ] && [ "$gitParameter" != "ng" ]; then
-
-            read -p "Please enter your Github $tokenType authorization token or enter 'ng' to prevent Github synchronization: " token
-            gitParameter=$token
-
-        else
-
-            githubConfigured=true
-
-        fi
-
-        if [ "$githubConfigured" = true ]; then
-
-            configureGithub=true
-
-        fi
+        read -p "Please enter your Github $tokenType authorization token or enter 'ng' to prevent Github synchronization: " token
+        gitParameter=$token
 
     done
 
+    echo "$gitParameter"
+
 }
+
+#################
+#
+# @ tests
+#
+# setupGithub
+# Result: Please type a valid project name:
+#
+# setupGithub blah
+# Result: Please enter your Github create authorization token or enter 'ng' to prevent Github syncronization:
+#
+# setupGithub blah ng
+# Result:
+#
+# setupGithub blah ng project
+# Result:
+#
+# setupGithub blah ng project tpv
+# Result:
+#
+# setupGithub blah 12345567890123456asdf
+# Result: Initializing Git local and remote repos.
+#################
+
+setupGithub(){
+
+    project=$1
+    gitParameter=$2
+    gitType=$3
+    options=$4
+
+    project="$(inputIsSet "project" "$project")"
+
+    if [ -z "$gitType" ]; then
+
+        gitType="project"
+
+    fi
+
+    git="$(configureGithub "$gitParameter")"
+
+    if [ "$git" != "ng" ]; then
+
+        printf "Initializing Git local and remote repos. \n"
+
+        touch .gitignore
+
+        if [ $gitType = "package" ]; then
+
+        cat << EOF > .gitignore
+/vendor
+.env
+
+EOF
+
+        elif [ $gitType = "project" ]; then
+
+        cat << EOF > .gitignore
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+/.idea
+/.vagrant
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.env
+
+EOF
+
+        fi
+
+        git init
+
+        git add .
+
+        commitMessage="$(githubCommitMessage)"
+
+        git commit -m "$commitMessage"
+
+        json="$(gitJson "$project" "$options")"
+
+        # Use Github's API to create a new repo on github.com and 2nd @param as access_token
+        curl https://api.github.com/user/repos?access_token=$git -d $json
+
+        # Add the newly created github.com repo as the origin to the local repo
+        git remote add origin https://github.com/$github/$project.git
+
+        gitVersioning $options
+
+        # Push local repo to github.com repo
+        git push origin master
+
+    fi
+
+}
+
+adjustComposerRepositories(){
+
+    packages=$1[@]
+    regexString=$2
+
+    installedPackages=("${!packages}")
+
+    for package in ${installedPackages[@]}; do
+        printf "$package\n"
+        perl -0777 -pi -e "${regexString//\$package/$package}" composer.json
+    done
+
+}
+
+
+prepareAndPush(){
+
+    project=$1
+
+    project="$(inputIsSet "project" "$project")"
+
+    navigateToProject "$project"
+
+    # Preparing Composer.json for production by replacing local path repos with remote repos
+
+    installedPackages=($(grep -Pazo '(?<=\"type\"\:\s\"path\"\,\n\s{12}\"url\"\:\s\"\.\.\/packages\/).*(?=\"\,)' composer.json | tr '\0' '\n'))
+    regexString='s/\"type\"\:\s\"path\"\,\s*?.*?$package\".*?\s*?.*?\s*?.*?\s*?\}/\"type\": \"vcs\",\n            \"url\": \"https:\/\/github.com\/'$github'\/$package.git\"/'
+
+    adjustComposerRepositories installedPackages "${regexString}"
+
+    composer update
+
+    git add .
+
+    commitMessage="$(githubCommitMessage)"
+
+    git commit -m "$commitMessage"
+
+    git push
+
+    # Preparing Composer.json for development by replacing remote repos with local path repos
+
+    installedPackages=($(grep -Pazo '(?<=\"type\"\:\s\"vcs\"\,\n\s{12}\"url\"\:\s\"https\:\/\/github\.com\/michaeljberry\/)(.*?)(?=\.git\")' composer.json | tr '\0' '\n'))
+    regexString='s/\"type\"\:\s\"vcs\"\,\s*?.*?$package\.git\"/\"type\": \"path\",\n            \"url\": \"\.\.\/packages\/$package\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}/'
+
+    adjustComposerRepositories installedPackages "${regexString}"
+
+    composer update
+
+}
+
+alias pp="prepareAndPush"
+
+pullGithubRepo(){
+
+    project=$1
+    gitParameter=$1
+
+    project="$(inputIsSet "project" "$project")"
+
+    git="$(configureGithub "$gitParameter")"
+
+    git clone https://github.com/$github/$project
+}
+
+#################
+#
+# @tests
+#
+# teardownGithub
+# Result: Please type a valid project name:
+#
+# teardownGithub test2
+# Result: Please enter your Github create authorization token or enter 'ng' to prevent Github syncronization:
+#
+# teardownGithub test2 ng
+# Result:
+#
+# teardownGithub test2 12345567890123456asdf
+# Result: {"message":"Bad credentials"}
+#
+# teardownGithub test2 realdeleteauthorizationtoken
+# Result: GitHub repo is deleted
+#################
 
 teardownGithub(){
 
@@ -655,12 +855,11 @@ teardownGithub(){
 
     project="$(inputIsSet "project" "$project")"
 
-    configureGithub "$gitParameter"
+    git="$(configureGithub "$gitParameter")"
 
-    # If a Github repo should be deleted, delete the repo...
-    if [ "$configureGithub" = true ]; then
+    if [ "$git" != "ng" ]; then
 
-        curl -X DELETE -H "Authorization: token $gitParameter" https://api.github.com/repos/$github/$project
+        curl -X DELETE -H "Authorization: token $git" https://api.github.com/repos/$github/$project
 
     fi
 
@@ -724,9 +923,77 @@ teardownDatabase(){
 
 }
 
+#################
+#
+# @tests
+#
+# createEnv
+# Result: Please type a valid project name:
+#
+# createEnv test2
+# Result:
+#
+# createEnv test2 true
+# Result: Default .env file created.
+#################
+
+createEnv(){
+
+    project=$1
+    shouldEnvBeCreated=$2
+
+    project="$(inputIsSet "project" "$project")"
+
+    if [ $shouldEnvBeCreated = "true" ]; then
+
+        touch .env
+
+        cat << EOF > .env
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_LOG_LEVEL=debug
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=homestead
+DB_USERNAME=homestead
+DB_PASSWORD=secret
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+QUEUE_DRIVER=sync
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_APP_CLUSTER=mt1
+
+EOF
+
+    fi
+}
+
 configureEnv(){
 
     project=$1
+    shouldEnvBeCreated=$2
 
     project="$(inputIsSet "project" "$project")"
 
@@ -735,6 +1002,8 @@ configureEnv(){
     cd $project
 
     printf "Configuring .env \n"
+
+    createEnv "$project" "$shouldEnvBeCreated"
 
     # Change host in new Laravel app's .env to Laradock host 'mysql'
     sed -i -e "s/DB_HOST=127.0.0.1/DB_HOST=mariadb/g" .env
@@ -801,6 +1070,36 @@ EOF
 
 }
 
+installProject(){
+
+    project=$1
+    gitParameter=$2
+    options=$3
+
+    project="$(inputIsSet "project" "$project")"
+
+    git="$(configureGithub "$gitParameter" "repo")"
+
+    printf "Installing application ...\n"
+
+    dev
+
+    pullGithubRepo "$project" "$gitParameter"
+
+    composer install
+
+    dup nmp
+
+    setupDatabase "$project"
+
+    configureEnv "$project" "true"
+
+    php artisan key:generate
+
+    openEditor "$project"
+
+}
+
 #################
 #
 # @param1 string project-name
@@ -820,30 +1119,25 @@ setup(){
 
     project="$(inputIsSet "project" "$project")"
 
-    configureGithub "$gitParameter"
+    git="$(configureGithub "$gitParameter")"
 
-    if [ "$configureGithub" = true ]; then
+    printf "Booting application... \n"
 
-        printf "Booting application... \n"
+    dev
 
-        # cd to dev folder
-        dev
+    setupLaravel "$project"
 
-        setupLaravel "$project"
+    dup nmp
 
-        dup nmp
+    setupGithub "$project" "$gitParameter" "project" "$options"
 
-        setupGithub "$project" "$gitParameter" "$options"
+    setupDatabase "$project"
 
-        setupDatabase "$project"
+    configureEnv "$project"
 
-        configureEnv "$project"
+    configureTest "$project" "$options"
 
-        configureTest "$project" "$options"
-
-        openEditor "$project"
-
-    fi
+    openEditor "$project"
 
 }
 
@@ -857,7 +1151,6 @@ setup(){
 #
 #################
 
-# If 2nd parameter is empty and doesn't equal 'ng', then we need a Github token
 teardown(){
 
     project=$1
@@ -865,32 +1158,25 @@ teardown(){
 
     project="$(inputIsSet "project" "$project")"
 
-    configureGithub "$gitParameter" "delete"
+    git="$(configureGithub "$gitParameter" "delete")"
 
-    if [ "$configureGithub" = true ]; then
+    dev
 
-        # cd to dev folder
+    if [ -d "$project" ]; then
+
+        printf "The directory $project exists. \n"
+
+        teardownLaravel "$project"
+
+        teardownGithub "$project" "$git"
+
+        teardownDatabase "$project"
+
         dev
 
-        # If the project directory exists, then...
-        if [ -d "$project" ]; then
+    else
 
-            printf "The directory $project exists. \n"
-
-            teardownLaravel "$project"
-
-            teardownGithub "$project" "$gitParameter"
-
-            teardownDatabase "$project"
-
-           # cd to dev folder
-            dev
-
-        else
-
-            printf "The directory $project doesn\'t exist \n"
-
-        fi
+        printf "The directory $project doesn\'t exist \n"
 
     fi
 
@@ -907,17 +1193,26 @@ setupPackage(){
 
     package="$(inputIsSet "package" "$package")"
 
-    navigateToProject "$project"
+    git="$(configureGithub "$gitParameter")"
 
-    configureGithub "$gitParameter"
+    navigateToProject "$project"
 
     if [ ! -d "vendor/michaeljberry/laravel-packager" ]; then
 
         printf "Installing laravel-packager... \n"
 
-        perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?\"(?=\n\s*\})\K/,\n        \"michaeljberry\/laravel-packager\": \"dev-master\"/' composer.json
+        # regexstring="\"require\"\:\s\{(?s).*?\"(?=\n\s*\})\K"
+        # search="composer.json"
 
-        perl -0777 -pi -e 's/\}(?=\n\})\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"vcs\",\n            \"url\": \"https:\/\/github.com\/michaeljberry\/laravel-packager.git\"\n        \}\n    \]/' composer.json
+        # if grep "$regexstring" "$search"; then
+
+        #     echo "Howdy!"
+
+        # fi
+
+        perl -0777 -pi -e 's/\"require-dev\"\:\s\{(?s).*?(?=\s*\})\K/,\n        \"michaeljberry\/laravel-packager\": \"dev-master\"/' composer.json
+
+        perl -0777 -pi -e 's/\"config\"\:\s*\{(?s).*?\}\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"vcs\",\n            \"url\": \"https:\/\/github.com\/michaeljberry\/laravel-packager.git\"\n        \}\n    \]/' composer.json
 
         composer update --lock
 
@@ -931,17 +1226,17 @@ setupPackage(){
 
     directory=$(pwd -W)
 
-    if [ ! -d "vendor/$github/$package" ]; then
+    if [ ! -d "../packages/$package" ]; then
 
         printf "Creating a new package... \n"
         php artisan packager:new $githubname ${package^}
-        #vendordirectory="$directory\\vendor\\$github\\$project"
-        #packageDirectory="$(dirname "$directory")"
-        #packageDirectory="$packageDirectory\\packages\\$project"
-        #symlink="mklink /D \"${vendordirectory//\//\\}\" \"${packageDirectory//\//\\}\""
-        #printf "Creating the symlink... \n"
-        #cmd /c <<< "$symlink"
-        #cmd /c <<< exit
+    #     #vendordirectory="$directory\\vendor\\$github\\$project"
+    #     #packageDirectory="$(dirname "$directory")"
+    #     #packageDirectory="$packageDirectory\\packages\\$project"
+    #     #symlink="mklink /D \"${vendordirectory//\//\\}\" \"${packageDirectory//\//\\}\""
+    #     #printf "Creating the symlink... \n"
+    #     #cmd /c <<< "$symlink"
+    #     #cmd /c <<< exit
 
     else
 
@@ -949,25 +1244,29 @@ setupPackage(){
 
     fi
 
-    cd ../packages/$package
+    if [ -d "../packages/$package" ]; then
 
-    printf "Configuring automatic package discovery... \n"
-    perl -0777 -pi -e 's/\"extra\"\: \{(?=\s)\K/\n        \"laravel\"\: \{\n            \"providers\"\:\[\n                \"'$githubname'\\\\'${package^}'\\\\'${package^}'ServiceProvider\"\n            \]\n        \},/' composer.json
-    perl -0777 -pi -e "s/\:author\_name/${fullname}/" composer.json
-    perl -0777 -pi -e "s/\:author\_email/${emailaddress}/" composer.json
-    perl -0777 -pi -e "s/\:author\_website/${website}/" composer.json
+        cd ../packages/$package
 
-    setupGithub $package $gitParameter $options
+        printf "Configuring automatic package discovery... \n"
+        perl -0777 -pi -e 's/\"extra\"\: \{(?=\s)\K/\n        \"laravel\"\: \{\n            \"providers\"\:\[\n                \"'$githubname'\\\\'${package^}'\\\\'${package^}'ServiceProvider\"\n            \]\n        \},/' composer.json
+        perl -0777 -pi -e "s/\:author\_name/${fullname}/" composer.json
+        perl -0777 -pi -e "s/\:author\_email/${emailaddress}/" composer.json
+        perl -0777 -pi -e "s/\:author\_website/${website}/" composer.json
 
-    cd "$directory"
+        setupGithub $package $git "package" $options
 
-    printf "Configuring composer.json before install... \n"
+        cd "$directory"
 
-    perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?\"(?=\n\s*\})\K/,\n        \"'$github'\/'$package'\": \"dev\-master\"/' composer.json
+        printf "Configuring composer.json before install... \n"
 
-    perl -0777 -pi -e 's/\"repositories\"\:\s\[(?s).*?(?=\s*\])\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
+        perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?(?=\s*\})\K/,\n        \"'$github'\/'$package'\": \"dev\-master\"/' composer.json
 
-    composer update
+        perl -0777 -pi -e 's/\"repositories\"\:\s*\[(?s).*?\}\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
+
+        composer update
+
+    fi
 
 }
 
@@ -987,13 +1286,13 @@ installPackage(){
     repositories="\"repositories\""
     search="composer.json"
 
-    if grep $repositories $search; then
+    if grep "$repositories" "$search"; then
 
-        perl -0777 -pi -e 's/\"repositories\"\:\s\[(?s).*?(?=\s*\])\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
+        perl -0777 -pi -e 's/\"repositories\"\:\s\[(?s).*?(?=\s*\])\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
 
     else
 
-        perl -0777 -pi -e 's/\}(?=\n\})\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}\n    \]/' composer.json
+        perl -0777 -pi -e 's/\}(?=\n\})\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}\n    \]/' composer.json
 
     fi
 
@@ -1029,7 +1328,7 @@ configureServiceProvider(){
     serviceProvider="${packageDirectoryUpperCase}ServiceProvider.php"
     find="boot\(\)\s*\{(?s)\K"
 
-    if grep $search $serviceProvider; then
+    if grep "$search" "$serviceProvider"; then
 
         printf "${configure^} are already loaded in boot()... \n"
 
@@ -1467,7 +1766,7 @@ packageMiddleware(){
 
     packageDirectoryUpperCase="${package^}"
 
-    configName="$(inputIsSet "config file" "$componentName")"
+    middlewareName="$(inputIsSet "middleware" "$componentName")"
 
     cd src
     mkdir Middleware
@@ -1477,7 +1776,7 @@ packageMiddleware(){
 
 }
 
-packageTests(){
+packageTest(){
 
     package=$1
     componentName=$2
@@ -1486,7 +1785,7 @@ packageTests(){
 
     packageDirectoryUpperCase="${package^}"
 
-    configName="$(inputIsSet "config file" "$componentName")"
+    testName="$(inputIsSet "test" "$componentName")"
 
     cd src
     mkdir Tests
@@ -1496,7 +1795,7 @@ packageTests(){
 
 }
 
-packageComposers(){
+packageComposer(){
 
     package=$1
     componentName=$2
@@ -1505,7 +1804,7 @@ packageComposers(){
 
     packageDirectoryUpperCase="${package^}"
 
-    configName="$(inputIsSet "config file" "$componentName")"
+    composerName="$(inputIsSet "composer" "$componentName")"
 
     cd src
     mkdir Composers
@@ -1524,12 +1823,20 @@ packageAssets(){
 
     packageDirectoryUpperCase="${package^}"
 
-    configName="$(inputIsSet "config file" "$componentName")"
-
     cd src
     mkdir Assets
     cd Assets
 
     printf "Creating assets... \n"
+
+    cd ..
+
+    search="publishes"
+    configure="assets"
+    replacement='\n        \$this\-\>'$search'([\_\_DIR\_\_ \. \"\/Assets\" \=\> public_path\(\"'$package'\"\)\]\, \"public\"\)\;'
+
+    configureServiceProvider "$search" "$configure" "$replacement"
+
+    dev
 
 }

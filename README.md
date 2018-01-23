@@ -12,7 +12,7 @@ On a normal day, during my normal routine, I was listening to Jeffrey Way explai
 
 > People wonder how to get really good at Laravel; it's by doing this over and over and over. Repetition creates muscle memory.
 
-I realized that for many of his tutorials, he uses a fresh install of Laravel and then he builds up his project. What I dreaded about following along with his tutorials was setting up a fresh install of Laravel for each series/tutorial/etc. There just seemed like a lot of moving parts and my memory isn't very good. On top of that, I hadn't taken the time to create a dreaded to-do list to document all the steps, because frankly, I still had to execute all of those commands by hand. 
+I realized that for many of his tutorials, he uses a fresh install of Laravel and then he builds up his project. What I dreaded about following along with his tutorials was setting up a fresh install of Laravel for each series/tutorial/etc. There just seemed like a lot of moving parts and my memory isn't very good. On top of that, I hadn't taken the time to create a dreaded to-do list to document all the steps, because frankly, I still had to execute all of those commands by hand.
 
 I finally got up the courage to write a bash script to automate it all. After all, though I knew many terminal commands for &ast;nix systems, I hadn't ever really tied them together in one script. But it dawned on me that if I created this script, then with arguments, I could control the exceptions as needed. Since a fresh install of Laravel is pretty standard, I could, for the most part, keep the upkeep of such a script to a minimum.
 
@@ -34,7 +34,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
       - GitHub `{username}`
   - When Git Bash for Windows opens, it automatically imports your `C:\Users\{username}\.bashrc` file as aliases that are available for use within the Git Bash shell.
 - [Laradock][6]
-  - `C:\folder\where\you\installed\laradock\nginx\sites\laravel.conf` 
+  - `C:\folder\where\you\installed\laradock\nginx\sites\laravel.conf`
     - Allows for dynamic host configuration. Now after setting up a new Laravel project (`exampleapp`), you can navigate to `exampleapp.dev`.
   - `server_name ~^(?<project>.+)\.dev$;`
   - `root /var/www/$project/public;`
@@ -55,25 +55,25 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
                 1. `<env name="DB_CONNECTION" value="sqlite"/>`
                 2. `<env name="DB_DATABASE" value=":memory:"/>`
             2. `tests/Utilities/functions.php` - These are helper functions
-                
-                1. 
-                
+
+                1.
+
                 ```php
                 function create(\$class, \$attributes = [], \$times = null)
                 {
                     return factory(\$class, \$times)->create(\$attributes);
                 }
-                
+
                 function make(\$class, \$attributes = [], \$times = null)
                 {
                     return factory(\$class, \$times)->make(\$attributes);
                 }
                 ```
-                
+
             3. `composer.json` - Edit line and append line
-                
-                1. 
-                
+
+                1.
+
                 ```json
                 "autoload-dev": {
                     "psr-4": {
@@ -82,7 +82,7 @@ This script will now allow me to, with very minimal effort, spin up a fresh inst
                     "files": ["tests/utilities/functions.php"] // Line added
                 },
                 ```
-                
+
 3. `setup todo 1234567890qwertyuiop pt`
 
 This one command will setup these items:
