@@ -429,7 +429,7 @@ navigateToProject(){
 startup(){
 
     project=$1
-    navigateToProject $project
+    navigateToProject "$project"
 
     printf "Starting $project. Just a minute... \n"
 
@@ -437,9 +437,7 @@ startup(){
 
     dup nmp
 
-    dev
-
-    setup "$project" "ng"
+    setupProject "$project" "ng"
 
     lara
 
@@ -1111,7 +1109,7 @@ installProject(){
 #
 #################
 
-setup(){
+setupProject(){
 
     project=$1
     gitParameter=$2
@@ -1122,8 +1120,6 @@ setup(){
     git="$(configureGithub "$gitParameter")"
 
     printf "Booting application... \n"
-
-    dev
 
     setupLaravel "$project"
 
@@ -1140,6 +1136,8 @@ setup(){
     openEditor "$project"
 
 }
+
+alias spr="setupProject"
 
 #################
 #
