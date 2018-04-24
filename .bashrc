@@ -31,6 +31,8 @@ dbash() {
 
     commands=$1
 
+    lara
+
     printf "Starting up Docker bash shell... \n"
 
     if [ ! -z "$commands" ]; then
@@ -439,7 +441,7 @@ startup(){
 
     setupProject "$project" "ng"
 
-    lara
+    # lara
 
     printf "Running initial migrations... \n"
     dbash "$project"
@@ -702,6 +704,8 @@ setupGithub(){
 
     git="$(configureGithub "$gitParameter")"
 
+    options="$(inputIsSet "option" "$options")"
+
     if [ "$git" != "ng" ]; then
 
         printf "Initializing Git local and remote repos. \n"
@@ -725,6 +729,7 @@ EOF
 /storage/*.key
 /vendor
 /.idea
+/.vscode
 /.vagrant
 Homestead.json
 Homestead.yaml
