@@ -79,7 +79,7 @@ dup() {
 
     printf "Starting Docker containers... \n"
 
-    string="docker-compose up -d"
+    string="docker-compose up -d workspace"
 
     if [[ "$options" == *"n"* ]]; then
 
@@ -104,6 +104,8 @@ dup() {
         string="$string redis"
 
     fi
+
+    printf "$string\n"
 
     $string
 
