@@ -5,6 +5,7 @@ source ~/aliases_git.sh
 source ~/aliases_laravel.sh
 source ~/functions_docker.sh
 source ~/functions_git.sh
+source ~/functions_laravel.sh
 source ~/functions_laravel_package.sh
 
 ###
