@@ -4,6 +4,7 @@ alias gaa="git add ."
 alias gb="git branch"
 alias gbd="git branch -d"
 alias gbfd="git branch -D"
+alias gbl="git branch --list"
 alias gc="git commit -m"
 alias gd="git --no-pager diff" # -w <- Shows meaningful changes only
 alias gdc="git diff --cached" # Show changes in staging area
