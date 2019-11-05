@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Git Functions
 
 alias nf="newFeature"

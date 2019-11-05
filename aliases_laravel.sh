@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Laravel
 alias pa="php artisan"
 alias pacac="php artisan cache:clear"

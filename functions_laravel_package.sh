@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Laravel Package Functions
 setupPackage(){
     project=$1

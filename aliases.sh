@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Common Used Aliases
 alias ll="ls -lah"
 alias h="cd $home"
@@ -13,7 +14,7 @@ alias cla="clear && ls -l"
 alias cll="clear && ls -la"
 alias cls="clear && ls"
 alias ea="vi ~/aliases"
-alias reload="source ~/.bashrc"
+alias reload="source ~/.bash_profile"
 
 ## Composer
 alias cu="composer update"
