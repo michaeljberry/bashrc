@@ -11,6 +11,9 @@ source ${HOME_DIR}/aliases_docker.sh
 echo "Loading general aliases..."
 source ${HOME_DIR}/aliases.sh
 
+echo "Loading random aliases..."
+source ${HOME_DIR}/random.sh
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	echo "Loading MAC specific scripts"
 	source ${HOME_DIR}/functions_mac.sh
