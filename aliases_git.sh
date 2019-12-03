@@ -8,6 +8,7 @@ alias gbd="git branch -d"
 alias gbfd="git branch -D"
 alias gbl="git branch --list"
 alias gbn="git rev-parse --abbrev-ref HEAD"
+alias gbr="git branch -r"
 alias gc="git commit"
 alias gca="git commit --amend --reuse-message HEAD"
 alias gcm="git commit -m"
@@ -27,6 +28,7 @@ alias gob="git checkout -b"
 alias gom="git checkout master"
 alias goverview="git log --all --oneline --no-merges" # --since='2 weeks' #Shows what everyone has been doing
 alias gp="git push"
+alias gpsu="git push --set-upstream $(git rev-parse --abbrev-ref HEAD)"
 alias gpt="git push --tags"
 alias gpl="git pull"
 alias gpraise="git blame" # -L5,10 #<file_name>
@@ -47,6 +49,7 @@ alias gstl="git stash list"
 alias gstp="git stash pop"
 alias gstreamup="git log --oneline --no-merges .." #<remote>/<branch> <- Review what you're about to pull
 alias gstreamdown="git log --oneline --no-merges " #<remote>/<branch>.. <- Review what you're about to push
+alias gt="git tag"
 alias gtoday="git log --since=00:00:00 --all --no-merges --oneline --author=" #<your email address> <- Today's work
 alias guc="git reset --soft HEAD~1"
 alias guch="git reset --hard HEAD^"
