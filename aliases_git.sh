@@ -28,7 +28,7 @@ alias gob="git checkout -b"
 alias gom="git checkout master"
 alias goverview="git log --all --oneline --no-merges" # --since='2 weeks' #Shows what everyone has been doing
 alias gp="git push"
-alias gpsu="git push --set-upstream $(git rev-parse --abbrev-ref HEAD)"
+alias gpsu="git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)"
 alias gpt="git push --tags"
 alias gpl="git pull"
 alias gpraise="git blame" # -L5,10 #<file_name>
