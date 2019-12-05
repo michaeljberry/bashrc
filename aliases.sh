@@ -14,7 +14,7 @@ alias cla="clear && ls -l"
 alias cll="clear && ls -la"
 alias cls="clear && ls"
 alias ea="vi ~/aliases"
-alias reload="source ~/.bash_profile"
+alias reload="source ~/${BASHFILE}"
 
 ## Composer
 alias cu="composer update"
