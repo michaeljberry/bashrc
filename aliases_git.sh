@@ -12,6 +12,7 @@ alias gbr="git branch -r"
 alias gc="git commit"
 alias gca="git commit --amend --reuse-message HEAD"
 alias gcm="git commit -m"
+alias gcp="git cherry-pick "
 alias gd="git --no-pager diff" # -w <- Shows meaningful changes only
 alias gdf="git log -p --"
 alias gdc="git diff --cached" # Show changes in staging area
