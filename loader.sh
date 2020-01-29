@@ -2,6 +2,7 @@
 
 HOME_DIR="/c/Users/Michael Berry/bashrc"
 BASHFILE=".bashrc"
+export XDEBUG_CONFIG="idekey=VSCODE"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	echo "Loading MAC specific scripts"
@@ -20,4 +21,3 @@ source "${HOME_DIR}"/aliases.sh
 
 echo "Loading random aliases..."
 source "${HOME_DIR}"/random.sh
-
