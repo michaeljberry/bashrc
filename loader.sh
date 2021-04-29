@@ -1,6 +1,9 @@
 #!/bin/bash
 
-HOME_DIR="/c/Users/Michael Berry/bashrc"
+HOME_DIR=""
+
+export $(cat .env 2>/dev/null | grep -v '^#' | xargs)
+
 BASHFILE=".bashrc"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -20,4 +23,3 @@ source "${HOME_DIR}"/aliases.sh
 
 echo "Loading random aliases..."
 source "${HOME_DIR}"/random.sh
-
