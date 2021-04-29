@@ -623,3 +623,8 @@ teardownGithub(){
         curl -X DELETE -H "Authorization: token $git" https://api.github.com/repos/$github/$project
     fi
 }
+
+function de() {
+    container=$1
+    docker exec -it $container /bin/bash
+}
