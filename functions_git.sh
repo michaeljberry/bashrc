@@ -10,7 +10,7 @@ alias pp="prepareAndPush"
  #
  # @param version
 ###
-gt(){
+function gt(){
     version=$1
     git tag -a -m "Tag version $version" "v$version"
 }
@@ -29,7 +29,7 @@ gt(){
  #
  # @return branchName
 ###
-branchName(){
+function branchName(){
     branchType=$1
     branchName=$2
     currentBranchName="$(getbranchname)"
@@ -52,7 +52,7 @@ branchName(){
  #
  # @return versionNumber
 ###
-versionNumber(){
+function versionNumber(){
     versionType=$1
     versionNumber=$2
     while [ -z "$versionNumber" ]; do
@@ -75,7 +75,7 @@ versionNumber(){
  #
  # @return featureBranchName
 ###
-featureName(){
+function featureName(){
     featureBranchName="$(featureBranchName "$1")"
     echo "$featureBranchName"
 }
@@ -87,7 +87,7 @@ featureName(){
  #
  # @return featureBranchName
 ###
-featureBranchName(){
+function featureBranchName(){
     featureBranchName="$(branchName "feature" "$1")"
     echo "$featureBranchName"
 }
@@ -105,7 +105,7 @@ featureBranchName(){
  #
  # @return releaseBranchName
 ###
-releaseName(){
+function releaseName(){
     releaseVersionNumber="$(releaseVersionNumber "$1")"
     releaseBranchName="$(releaseBranchName "$releaseVersionNumber")"
     echo "$releaseBranchName"
@@ -118,7 +118,7 @@ releaseName(){
  #
  # @return releaseBranchName
 ###
-releaseBranchName(){
+function releaseBranchName(){
     releaseBranchName="$(branchName "release" "$1")"
     echo "$releaseBranchName"
 }
@@ -130,7 +130,7 @@ releaseBranchName(){
  #
  # @return releaveVersionNumber
 ###
-releaseVersionNumber(){
+function releaseVersionNumber(){
     releaseVersionNumber="$(versionNumber "release" "$1")"
     echo "$releaseVersionNumber"
 }
@@ -148,7 +148,7 @@ releaseVersionNumber(){
  #
  # @return hotfixBranchName
 ###
-hotfixName(){
+function hotfixName(){
     hotfixVersionNumber="$(hotfixVersionNumber "$1")"
     hotfixBranchName="$(hotfixBranchName "$hotfixVersionNumber")"
     echo "$hotfixBranchName"
@@ -161,7 +161,7 @@ hotfixName(){
  #
  # @return hotfixBranchName
 ###
-hotfixBranchName(){
+function hotfixBranchName(){
     hotfixBranchName="$(branchName "hotfix" "$1")"
     echo "$hotfixBranchName"
 }
@@ -173,7 +173,7 @@ hotfixBranchName(){
  #
  # @return hotfixVersionNumber
 ###
-hotfixVersionNumber(){
+function hotfixVersionNumber(){
     hotfixVersionNumber="$(versionNumber "hotfix" "$1")"
     echo "$hotfixVersionNumber"
 }
@@ -190,7 +190,7 @@ hotfixVersionNumber(){
  # @param branchVersion
  # branchName
 ###
-finishInMaster(){
+function finishInMaster(){
     branchVersion=$1
     branchName=$2
     git checkout master
@@ -204,7 +204,7 @@ finishInMaster(){
  #
  # @param branchName
 ###
-finishInDevelop(){
+function finishInDevelop(){
     branchName=$1
     git checkout develop
     git merge --no-ff "$branchName"
@@ -216,7 +216,7 @@ finishInDevelop(){
  # @param releaseName
  # @param branchName
 ###
-finishInRelease(){
+function finishInRelease(){
     releaseName=$1
     branchName=$2
     git checkout "$releaseName"
@@ -234,7 +234,7 @@ finishInRelease(){
  #
  # @param featureName
 ###
-newFeature(){
+function newFeature(){
     newFeatureName="$(featureName "$1")"
     git checkout -b "$newFeatureName" develop
 }
@@ -244,7 +244,7 @@ newFeature(){
  #
  # @param featureName
 ###
-finishFeature(){
+function finishFeature(){
     featureName="$(featureName "$1")"
     gitAddAndCommit "feature" "$featureName"
     git checkout develop
@@ -264,7 +264,7 @@ finishFeature(){
  #
  # @param releaseVersionNumber
 ###
-newRelease(){
+function newRelease(){
     releaseVersion="$(releaseVersionNumber "$1")"
     releaseName="$(releaseName "$releaseVersion")"
     git checkout -b "$releaseName" develop
@@ -275,7 +275,7 @@ newRelease(){
  #
  # @param releaseVersionNumber
 ###
-finishRelease(){
+function finishRelease(){
     releaseVersion="$(releaseVersionNumber "$1")"
     releaseName="$(releaseName "$releaseVersion")"
     gitAddAndCommit "release" "$releaseName"
@@ -295,7 +295,7 @@ finishRelease(){
  #
  # @param hotfixVersionNumber
 ###
-newHotfix(){
+function newHotfix(){
     hotfixVersion="$(hotfixVersionNumber "$1")"
     hotfixName="$(hotfixName "$hotfixVersion")"
     git checkout -b "$hotfixName" master
@@ -308,7 +308,7 @@ newHotfix(){
  # @param mergeIntoRelease
  # @param releaseVersionNumber
 ###
-finishHotfix(){
+function finishHotfix(){
     hotfixVersion="$(hotfixVersionNumber "$1")"
     mergeIntoRelease=$2
     hotfixName="$(hotfixName "$hotfixVersion")"
@@ -340,7 +340,7 @@ finishHotfix(){
  # @param branchType
  # @param brancName
 ###
-gitAddAndCommit(){
+function gitAddAndCommit(){
     branchType=$1
     branchName=$2
     branchName="$(branchName "$branchType" "$branchName")"
@@ -354,7 +354,7 @@ gitAddAndCommit(){
  #
  # @return commitMessage
 ###
-commitMessage(){
+function commitMessage(){
     commitMessage=""
     while [ -z "$commitMessage" ]; do
         read -p "Please enter your commit message for $branchName: " commitMessage
@@ -386,7 +386,7 @@ commitMessage(){
 # Result: {"name":"blah", "private":true}
 #################
 
-gitJson(){
+function gitJson(){
     project=$1
     options=$2
 
@@ -417,7 +417,7 @@ gitJson(){
 # Result: Versioning...
 #################
 
-gitVersioning(){
+function gitVersioning(){
     options=$1
 
     #If 'v' is used in $options, then create version tag
@@ -440,7 +440,7 @@ gitVersioning(){
 # Result: First Commit
 #################
 
-githubCommitMessage(){
+function githubCommitMessage(){
     message=$1
 
     message="$(inputIsSet "commit message" "$message")"
@@ -462,7 +462,7 @@ githubCommitMessage(){
 # Result: 12345567890123456asdf
 #################
 
-configureGithub(){
+function configureGithub(){
     configureGithub=false
     githubConfigured=false
     gitParameter=$1
@@ -503,7 +503,7 @@ configureGithub(){
 # Result: Initializing Git local and remote repos.
 #################
 
-setupGithub(){
+function setupGithub(){
     project=$1
     gitParameter=$2
     gitType=$3
@@ -562,7 +562,7 @@ EOF
     fi
 }
 
-prepareAndPush(){
+function prepareAndPush(){
     project=$1
     project="$(inputIsSet "project" "$project")"
 
@@ -583,7 +583,7 @@ prepareAndPush(){
     composer update
 }
 
-pullGithubRepo(){
+function pullGithubRepo(){
     project=$1
     gitParameter=$1
 
@@ -612,7 +612,7 @@ pullGithubRepo(){
 # Result: GitHub repo is deleted
 #################
 
-teardownGithub(){
+function teardownGithub(){
     project=$1
     gitParameter=$2
 

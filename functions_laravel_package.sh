@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Laravel Package Functions
-setupPackage(){
+function setupPackage(){
     project=$1
     package=$2
     gitParameter=$3
@@ -67,7 +67,7 @@ setupPackage(){
     fi
 }
 
-installPackage(){
+function installPackage(){
     project=$1
     package=$2
 
@@ -91,7 +91,7 @@ installPackage(){
     composer update
 }
 
-navigateToPackage(){
+function navigateToPackage(){
     package=$1
     createPackage=$2
 
@@ -107,7 +107,7 @@ navigateToPackage(){
     navigateToFolder "$package" "$createPackage" "package"
 }
 
-configureServiceProvider(){
+function configureServiceProvider(){
     search=$1
     configure=$2
     replacement=$3
@@ -123,7 +123,7 @@ configureServiceProvider(){
     fi
 }
 
-packageController(){
+function packageController(){
     package=$1
     componentName=$2
 
@@ -231,7 +231,7 @@ EOF
     dev
 }
 
-packageFactory(){
+function packageFactory(){
     package=$1
     componentName=$2
 
@@ -263,7 +263,7 @@ EOF
     dev
 }
 
-packageModel(){
+function packageModel(){
     package=$1
     componentName=$2
 
@@ -295,7 +295,7 @@ EOF
     dev
 }
 
-packageRoute(){
+function packageRoute(){
     package=$1
 
     navigateToPackage "$package"
@@ -328,7 +328,7 @@ EOF
     dev
 }
 
-packageSeeder(){
+function packageSeeder(){
     package=$1
     componentName=$2
 
@@ -366,7 +366,7 @@ EOF
     dev
 }
 
-packageMigration(){
+function packageMigration(){
     package=$1
     componentName=$2
 
@@ -428,7 +428,7 @@ EOF
     dev
 }
 
-packageView(){
+function packageView(){
     package=$1
     componentName=$2
 
@@ -457,7 +457,7 @@ EOF
     dev
 }
 
-packageConfig(){
+function packageConfig(){
     package=$1
     componentName=$2
 
@@ -489,7 +489,7 @@ EOF
     dev
 }
 
-packageMiddleware(){
+function packageMiddleware(){
     package=$1
     componentName=$2
 
@@ -504,7 +504,7 @@ packageMiddleware(){
     printf "Creating middleware... \n"
 }
 
-packageTest(){
+function packageTest(){
     package=$1
     componentName=$2
 
@@ -519,7 +519,7 @@ packageTest(){
     printf "Creating middleware... \n"
 }
 
-packageComposer(){
+function packageComposer(){
     package=$1
     componentName=$2
 
@@ -534,7 +534,7 @@ packageComposer(){
     printf "Creating composers... \n"
 }
 
-packageAssets(){
+function packageAssets(){
     package=$1
     componentName=$2
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 ## Docker Functions
-lara(){
+function lara(){
     dev
 
     printf "Navigating to Docker containers... \n"
     cd laradock
 }
 
-dbash(){
+function dbash(){
     commands=$1
 
     lara
@@ -21,23 +21,23 @@ dbash(){
     fi
 }
 
-dmaria(){
+function dmaria(){
     lara
     winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot'
 }
 
-dcont(){
+function dcont(){
     container=$1
 
     winpty docker exec -it "$container" bash;
 }
 
-dk(){
+function dk(){
     lara
     docker-compose kill
 }
 
-dup(){
+function dup(){
     options=$1
 
     lara
@@ -82,7 +82,7 @@ dup(){
 #
 #################
 
-setupDatabase(){
+function setupDatabase(){
     project=$1
 
     project="$(inputIsSet "project" "$project")"
@@ -107,7 +107,7 @@ setupDatabase(){
 #
 #################
 
-teardownDatabase(){
+function teardownDatabase(){
     lara
     winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     DROP DATABASE IF EXISTS 'project'_testing;
