@@ -10,6 +10,7 @@ set +a
 echo "$HOME_DIR"
 
 BASHFILE=".bashrc"
+export XDEBUG_CONFIG="idekey=VSCODE"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	echo "Loading MAC specific scripts"
