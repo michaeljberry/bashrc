@@ -35,3 +35,6 @@ puts(){
     pu --testsuite=$1
 }
 alias puxi="phpunit --exclude-group integration"
+
+## Jest
+#alias jest="yarn test"

@@ -65,3 +65,5 @@ alias pat="php artisan tinker"
 alias paup="php artisan up"
 alias pavp="php artisan vendor:publish"
 alias pavpf="php artisan vendor:publish --tag=public --force"
+
+alias sail="./vendor/bin/sail up"

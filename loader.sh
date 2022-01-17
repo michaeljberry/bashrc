@@ -30,6 +30,9 @@ source "${HOME_DIR}"/aliases_docker.sh
 echo "Loading Docker functions..."
 source "${HOME_DIR}"/functions_docker.sh
 
+echo "Loading Laravel aliases..."
+source "${HOME_DIR}"/aliases_laravel.sh
+
 echo "Loading general aliases..."
 source "${HOME_DIR}"/aliases.sh
 
