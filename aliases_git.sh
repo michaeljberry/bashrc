@@ -54,8 +54,3 @@ alias gt="git tag"
 alias gtoday="git log --since=00:00:00 --all --no-merges --oneline --author=" #<your email address> <- Today's work
 alias guc="git reset --soft HEAD~1"
 alias guch="git reset --hard HEAD^"
-function gll() {
-	line=$1
-	file=$2
-	git log -L "$line","$line":"$file"
-}

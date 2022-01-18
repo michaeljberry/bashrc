@@ -6,11 +6,11 @@ alias ftf="finishFeature"
 alias pp="prepareAndPush"
 
 ###
- # Add version number to branch
- #
- # @param version
+# Add version number to branch
+#
+# @param version
 ###
-function gt(){
+function gt() {
     version=$1
     git tag -a -m "Tag version $version" "v$version"
 }
@@ -22,14 +22,14 @@ function gt(){
 ########################################
 
 ###
- # Check if branch name is set and if not prompt for and return a branch name
- #
- # @param branchType
- # @param branchName
- #
- # @return branchName
+# Check if branch name is set and if not prompt for and return a branch name
+#
+# @param branchType
+# @param branchName
+#
+# @return branchName
 ###
-function branchName(){
+function branchName() {
     branchType=$1
     branchName=$2
     currentBranchName="$(getbranchname)"
@@ -45,14 +45,14 @@ function branchName(){
 }
 
 ###
- # Check if branch version number is set and if not prompt for a branch version
- #
- # @param versionType
- # @param versionNumber
- #
- # @return versionNumber
+# Check if branch version number is set and if not prompt for a branch version
+#
+# @param versionType
+# @param versionNumber
+#
+# @return versionNumber
 ###
-function versionNumber(){
+function versionNumber() {
     versionType=$1
     versionNumber=$2
     while [ -z "$versionNumber" ]; do
@@ -69,25 +69,25 @@ function versionNumber(){
 ####################
 
 ###
- # Create Feature branch name if not set
- #
- # @param featureBranchName
- #
- # @return featureBranchName
+# Create Feature branch name if not set
+#
+# @param featureBranchName
+#
+# @return featureBranchName
 ###
-function featureName(){
+function featureName() {
     featureBranchName="$(featureBranchName "$1")"
     echo "$featureBranchName"
 }
 
 ###
- # Format Feature branch name
- #
- # @param featureBranchName
- #
- # @return featureBranchName
+# Format Feature branch name
+#
+# @param featureBranchName
+#
+# @return featureBranchName
 ###
-function featureBranchName(){
+function featureBranchName() {
     featureBranchName="$(branchName "feature" "$1")"
     echo "$featureBranchName"
 }
@@ -99,38 +99,38 @@ function featureBranchName(){
 ####################
 
 ###
- # Create Release branch name
- #
- # @param releaseVersionNumber
- #
- # @return releaseBranchName
+# Create Release branch name
+#
+# @param releaseVersionNumber
+#
+# @return releaseBranchName
 ###
-function releaseName(){
+function releaseName() {
     releaseVersionNumber="$(releaseVersionNumber "$1")"
     releaseBranchName="$(releaseBranchName "$releaseVersionNumber")"
     echo "$releaseBranchName"
 }
 
 ###
- # Format Release branch name
- #
- # @param releaseBranchName
- #
- # @return releaseBranchName
+# Format Release branch name
+#
+# @param releaseBranchName
+#
+# @return releaseBranchName
 ###
-function releaseBranchName(){
+function releaseBranchName() {
     releaseBranchName="$(branchName "release" "$1")"
     echo "$releaseBranchName"
 }
 
 ###
- # Format Release branch version number
- #
- # @param releaseVersionNumber
- #
- # @return releaveVersionNumber
+# Format Release branch version number
+#
+# @param releaseVersionNumber
+#
+# @return releaveVersionNumber
 ###
-function releaseVersionNumber(){
+function releaseVersionNumber() {
     releaseVersionNumber="$(versionNumber "release" "$1")"
     echo "$releaseVersionNumber"
 }
@@ -142,38 +142,38 @@ function releaseVersionNumber(){
 ####################
 
 ###
- # Create Hotfix branch name
- #
- # @param hotfixVersionNumber
- #
- # @return hotfixBranchName
+# Create Hotfix branch name
+#
+# @param hotfixVersionNumber
+#
+# @return hotfixBranchName
 ###
-function hotfixName(){
+function hotfixName() {
     hotfixVersionNumber="$(hotfixVersionNumber "$1")"
     hotfixBranchName="$(hotfixBranchName "$hotfixVersionNumber")"
     echo "$hotfixBranchName"
 }
 
 ###
- # Format Hotfix branch name
- #
- # @param hotfixBranchName
- #
- # @return hotfixBranchName
+# Format Hotfix branch name
+#
+# @param hotfixBranchName
+#
+# @return hotfixBranchName
 ###
-function hotfixBranchName(){
+function hotfixBranchName() {
     hotfixBranchName="$(branchName "hotfix" "$1")"
     echo "$hotfixBranchName"
 }
 
 ###
- # Format Hotfix branch version number
- #
- # @param hotfixVersionNumber
- #
- # @return hotfixVersionNumber
+# Format Hotfix branch version number
+#
+# @param hotfixVersionNumber
+#
+# @return hotfixVersionNumber
 ###
-function hotfixVersionNumber(){
+function hotfixVersionNumber() {
     hotfixVersionNumber="$(versionNumber "hotfix" "$1")"
     echo "$hotfixVersionNumber"
 }
@@ -185,12 +185,12 @@ function hotfixVersionNumber(){
 ########################################
 
 ###
- # Merge branch into Master branch
- #
- # @param branchVersion
- # branchName
+# Merge branch into Master branch
+#
+# @param branchVersion
+# branchName
 ###
-function finishInMaster(){
+function finishInMaster() {
     branchVersion=$1
     branchName=$2
     git checkout master
@@ -200,23 +200,23 @@ function finishInMaster(){
 }
 
 ###
- # Merge branch into Develop branch
- #
- # @param branchName
+# Merge branch into Develop branch
+#
+# @param branchName
 ###
-function finishInDevelop(){
+function finishInDevelop() {
     branchName=$1
     git checkout develop
     git merge --no-ff "$branchName"
 }
 
 ###
- # Merge branch into Release branch
- #
- # @param releaseName
- # @param branchName
+# Merge branch into Release branch
+#
+# @param releaseName
+# @param branchName
 ###
-function finishInRelease(){
+function finishInRelease() {
     releaseName=$1
     branchName=$2
     git checkout "$releaseName"
@@ -230,21 +230,21 @@ function finishInRelease(){
 ####################
 
 ###
- # Create new Feature branch based on develop branch
- #
- # @param featureName
+# Create new Feature branch based on develop branch
+#
+# @param featureName
 ###
-function newFeature(){
+function newFeature() {
     newFeatureName="$(featureName "$1")"
     git checkout -b "$newFeatureName" develop
 }
 
 ###
- # Finish the currently checked out feature branch and merge with develop
- #
- # @param featureName
+# Finish the currently checked out feature branch and merge with develop
+#
+# @param featureName
 ###
-function finishFeature(){
+function finishFeature() {
     featureName="$(featureName "$1")"
     gitAddAndCommit "feature" "$featureName"
     git checkout develop
@@ -260,22 +260,22 @@ function finishFeature(){
 ####################
 
 ###
- # Create new Release branch based on develop branch
- #
- # @param releaseVersionNumber
+# Create new Release branch based on develop branch
+#
+# @param releaseVersionNumber
 ###
-function newRelease(){
+function newRelease() {
     releaseVersion="$(releaseVersionNumber "$1")"
     releaseName="$(releaseName "$releaseVersion")"
     git checkout -b "$releaseName" develop
 }
 
 ###
- # Finish Release branch with input version number
- #
- # @param releaseVersionNumber
+# Finish Release branch with input version number
+#
+# @param releaseVersionNumber
 ###
-function finishRelease(){
+function finishRelease() {
     releaseVersion="$(releaseVersionNumber "$1")"
     releaseName="$(releaseName "$releaseVersion")"
     gitAddAndCommit "release" "$releaseName"
@@ -291,24 +291,24 @@ function finishRelease(){
 ####################
 
 ###
- # Create new Hotfix branch based on master branch
- #
- # @param hotfixVersionNumber
+# Create new Hotfix branch based on master branch
+#
+# @param hotfixVersionNumber
 ###
-function newHotfix(){
+function newHotfix() {
     hotfixVersion="$(hotfixVersionNumber "$1")"
     hotfixName="$(hotfixName "$hotfixVersion")"
     git checkout -b "$hotfixName" master
 }
 
 ###
- # Finish Hotfix branch and merge to develop branch and optionally release branch
- #
- # @param hotfixVersionNumber
- # @param mergeIntoRelease
- # @param releaseVersionNumber
+# Finish Hotfix branch and merge to develop branch and optionally release branch
+#
+# @param hotfixVersionNumber
+# @param mergeIntoRelease
+# @param releaseVersionNumber
 ###
-function finishHotfix(){
+function finishHotfix() {
     hotfixVersion="$(hotfixVersionNumber "$1")"
     mergeIntoRelease=$2
     hotfixName="$(hotfixName "$hotfixVersion")"
@@ -335,12 +335,12 @@ function finishHotfix(){
 }
 
 ###
- # Add files in branch and commit
- #
- # @param branchType
- # @param brancName
+# Add files in branch and commit
+#
+# @param branchType
+# @param brancName
 ###
-function gitAddAndCommit(){
+function gitAddAndCommit() {
     branchType=$1
     branchName=$2
     branchName="$(branchName "$branchType" "$branchName")"
@@ -350,11 +350,11 @@ function gitAddAndCommit(){
 }
 
 ###
- # Prompt for commit message
- #
- # @return commitMessage
+# Prompt for commit message
+#
+# @return commitMessage
 ###
-function commitMessage(){
+function commitMessage() {
     commitMessage=""
     while [ -z "$commitMessage" ]; do
         read -p "Please enter your commit message for $branchName: " commitMessage
@@ -386,7 +386,7 @@ function commitMessage(){
 # Result: {"name":"blah", "private":true}
 #################
 
-function gitJson(){
+function gitJson() {
     project=$1
     options=$2
 
@@ -417,7 +417,7 @@ function gitJson(){
 # Result: Versioning...
 #################
 
-function gitVersioning(){
+function gitVersioning() {
     options=$1
 
     #If 'v' is used in $options, then create version tag
@@ -440,7 +440,7 @@ function gitVersioning(){
 # Result: First Commit
 #################
 
-function githubCommitMessage(){
+function githubCommitMessage() {
     message=$1
 
     message="$(inputIsSet "commit message" "$message")"
@@ -462,7 +462,7 @@ function githubCommitMessage(){
 # Result: 12345567890123456asdf
 #################
 
-function configureGithub(){
+function configureGithub() {
     configureGithub=false
     githubConfigured=false
     gitParameter=$1
@@ -503,7 +503,7 @@ function configureGithub(){
 # Result: Initializing Git local and remote repos.
 #################
 
-function setupGithub(){
+function setupGithub() {
     project=$1
     gitParameter=$2
     gitType=$3
@@ -523,13 +523,13 @@ function setupGithub(){
 
         touch .gitignore
         if [ $gitType = "package" ]; then
-        cat << EOF > .gitignore
+            cat <<EOF >.gitignore
 /vendor
 .env
 
 EOF
         elif [ $gitType = "project" ]; then
-        cat << EOF > .gitignore
+            cat <<EOF >.gitignore
 /node_modules
 /public/hot
 /public/storage
@@ -562,7 +562,7 @@ EOF
     fi
 }
 
-function prepareAndPush(){
+function prepareAndPush() {
     project=$1
     project="$(inputIsSet "project" "$project")"
 
@@ -583,7 +583,7 @@ function prepareAndPush(){
     composer update
 }
 
-function pullGithubRepo(){
+function pullGithubRepo() {
     project=$1
     gitParameter=$1
 
@@ -612,7 +612,7 @@ function pullGithubRepo(){
 # Result: GitHub repo is deleted
 #################
 
-function teardownGithub(){
+function teardownGithub() {
     project=$1
     gitParameter=$2
 
@@ -624,7 +624,8 @@ function teardownGithub(){
     fi
 }
 
-function de() {
-    container=$1
-    docker exec -it $container /bin/bash
+function gll() {
+    line=$1
+    file=$2
+    git log -L "$line","$line":"$file"
 }

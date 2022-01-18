@@ -1,13 +1,13 @@
 #!/bin/bash
 ## Docker Functions
-function lara(){
+function lara() {
     dev
 
     printf "Navigating to Docker containers... \n"
     cd laradock
 }
 
-function dbash(){
+function dbash() {
     commands=$1
 
     lara
@@ -21,23 +21,23 @@ function dbash(){
     fi
 }
 
-function dmaria(){
+function dmaria() {
     lara
     winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot'
 }
 
-function dcont(){
+function dcont() {
     container=$1
 
-    winpty docker exec -it "$container" bash;
+    winpty docker exec -it "$container" bash
 }
 
-function dk(){
+function dk() {
     lara
     docker-compose kill
 }
 
-function dup(){
+function dup() {
     options=$1
 
     lara
@@ -82,7 +82,7 @@ function dup(){
 #
 #################
 
-function setupDatabase(){
+function setupDatabase() {
     project=$1
 
     project="$(inputIsSet "project" "$project")"
@@ -107,7 +107,7 @@ function setupDatabase(){
 #
 #################
 
-function teardownDatabase(){
+function teardownDatabase() {
     lara
     winpty docker-compose exec mariadb sh -c 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql -uroot --execute "
     DROP DATABASE IF EXISTS 'project'_testing;
@@ -116,4 +116,9 @@ function teardownDatabase(){
     SHOW GRANTS FOR '$project'@'"'"'%'"'"';
     FLUSH PRIVILEGES;
     ";'
+}
+
+function de() {
+    container=$1
+    docker exec -it $container /bin/bash
 }
