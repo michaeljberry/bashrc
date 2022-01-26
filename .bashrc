@@ -312,14 +312,7 @@ navigateToFolder() {
     fi
 }
 
-alias addbb='eval `ssh-agent`;ssh-add ~/.ssh/bitbucket'
-alias buildapp='./am image.build development unsafe'
-alias watchservice='./am instance.sync -w'
-alias startservice='./am image.start -E dev -e aws -e bucket -p 8080:80'
 alias reclaimdocker='docker run --privileged --pid=host docker/desktop-reclaim-space && docker rm $(docker ps -q --filter="ancestor=docker/desktop-reclaim-space")'
-alias watchvue='./am instance.am vue.build insight dev -w'
-alias watchauth='./am instance.am vue.build auth dev -w'
-alias lintvue='./am vue.lint app'
 alias cmdapp='docker exec -it $(docker ps -q --filter="ancestor=app:latest") /bin/bash'
 alias killapp='docker kill $(docker ps -q --filter="ancestor=app:latest")'
 
@@ -337,7 +330,7 @@ EOF
 
 alias eks-qa='aws eks --region us-east-1 update-kubeconfig --name AppQA --profile eks-qa; kubectl config set-context --current --namespace=app'
 alias eks-prod='aws eks --region us-east-1 update-kubeconfig --name AppProd --profile eks-prod; kubectl config set-context --current --namespace=app'
-function dbservice() {
+function dbapp() {
     db=$1
     if [ -z "$db" ]; then
         db="default"
@@ -348,4 +341,13 @@ function dbservice() {
 function de() {
     container=$1
     docker exec -it $container /bin/bash
+}
+alias addbb='eval `ssh-agent`;ssh-add ~/.ssh/bitbucket'
+function addssh() {
+    key=$1
+    if [ -z "$key" ]; then
+        key="bitbucket"
+    fi
+    eval ssh-agent
+    ssh-add ~/.ssh/"$key"
 }
