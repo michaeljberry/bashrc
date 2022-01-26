@@ -1,13 +1,4 @@
 #!/bin/bash
-source ~/env.sh
-source ~/aliases.sh
-source ~/aliases_docker.sh
-source ~/aliases_git.sh
-source ~/aliases_laravel.sh
-source ~/functions_docker.sh
-source ~/functions_git.sh
-source ~/functions_laravel.sh
-source ~/functions_laravel_package.sh
 
 ###
 # Navigate to root dev folder - optionally navigate to project
@@ -348,6 +339,6 @@ function addssh() {
     if [ -z "$key" ]; then
         key="bitbucket"
     fi
-    eval ssh-agent
+    eval "$(ssh-agent)"
     ssh-add ~/.ssh/"$key"
 }

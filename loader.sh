@@ -9,7 +9,7 @@ export $(cat ~/bashrc/.env 2>/dev/null | grep -v '^#' | xargs)
 set +a
 echo "$HOME_DIR"
 
-BASHFILE=".bashrc"
+BASHFILE="bashrc"
 export XDEBUG_CONFIG="idekey=VSCODE"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -17,6 +17,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	source "${HOME_DIR}"/functions_mac.sh
 	BASHFILE=".bash_profile"
 fi
+
+echo "Loading bash aliases and functions"
+source "${HOME_DIR}"/"$BASHFILE"
 
 echo "Loading Git aliases..."
 source "${HOME_DIR}"/aliases_git.sh
@@ -32,6 +35,12 @@ source "${HOME_DIR}"/functions_docker.sh
 
 echo "Loading Laravel aliases..."
 source "${HOME_DIR}"/aliases_laravel.sh
+
+# echo "Loading Laravel functions..."
+# source "${HOME_DIR}"/functions_laravel.sh
+
+echo "Loading Laravel Package functions..."
+source "${HOME_DIR}"/functions_laravel_package.sh
 
 echo "Loading general aliases..."
 source "${HOME_DIR}"/aliases.sh
