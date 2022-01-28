@@ -34,7 +34,7 @@ function setupPackage(){
 
     if [ ! -d "../packages/$package" ]; then
         printf "Creating a new package... \n"
-        php artisan packager:new $githubname ${package^}
+        php artisan packager:new "$githubname" "${package^}"
     #     #vendordirectory="$directory\\vendor\\$github\\$project"
     #     #packageDirectory="$(dirname "$directory")"
     #     #packageDirectory="$packageDirectory\\packages\\$project"
@@ -47,21 +47,21 @@ function setupPackage(){
     fi
 
     if [ -d "../packages/$package" ]; then
-        cd ../packages/$package
+        cd ../packages/"$package" || return
         printf "Configuring automatic package discovery... \n"
 
-        perl -0777 -pi -e 's/\"extra\"\: \{(?=\s)\K/\n        \"laravel\"\: \{\n            \"providers\"\:\[\n                \"'$githubname'\\\\'${package^}'\\\\'${package^}'ServiceProvider\"\n            \]\n        \},/' composer.json
+        perl -0777 -pi -e 's/\"extra\"\: \{(?=\s)\K/\n        \"laravel\"\: \{\n            \"providers\"\:\[\n                \"'"$githubname"'''"${package^}"'''"${package^}"'ServiceProvider\"\n            \]\n        \},/' composer.json
         perl -0777 -pi -e "s/\:author\_name/${fullname}/" composer.json
         perl -0777 -pi -e "s/\:author\_email/${emailaddress}/" composer.json
         perl -0777 -pi -e "s/\:author\_website/${website}/" composer.json
 
-        setupGithub $package $git "package" $options
+        setupGithub "$package" "$git" "package" "$options"
 
-        cd "$directory"
+        cd "$directory" || return
         printf "Configuring composer.json before install... \n"
 
-        perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?(?=\s*\})\K/,\n        \"'$github'\/'$package'\": \"dev\-master\"/' composer.json
-        perl -0777 -pi -e 's/\"repositories\"\:\s*\[(?s).*?\}\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
+        perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?(?=\s*\})\K/,\n        \"'"$github"'\/'"$package"'\": \"dev\-master\"/' composer.json
+        perl -0777 -pi -e 's/\"repositories\"\:\s*\[(?s).*?\}\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'"$package"'\",\n            \"options\"\:\{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
 
         composer update
     fi
@@ -77,15 +77,15 @@ function installPackage(){
 
     printf "Configuring composer.json before install... \n"
 
-    perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?\"(?=\n\s*\})\K/,\n        \"'$github'\/'$package'\": \"dev\-master\"/' composer.json
+    perl -0777 -pi -e 's/\"require\"\:\s\{(?s).*?\"(?=\n\s*\})\K/,\n        \"'"$github"'\/'"$package"'\": \"dev\-master\"/' composer.json
 
     repositories="\"repositories\""
     search="composer.json"
 
     if grep "$repositories" "$search"; then
-        perl -0777 -pi -e 's/\"repositories\"\:\s\[(?s).*?(?=\s*\])\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
+        perl -0777 -pi -e 's/\"repositories\"\:\s\[(?s).*?(?=\s*\])\K/,\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'"$package"'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}/' composer.json
     else
-        perl -0777 -pi -e 's/\}(?=\n\})\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'$package'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}\n    \]/' composer.json
+        perl -0777 -pi -e 's/\}(?=\n\})\K/,\n    \"repositories\": \[\n        \{\n            \"type\": \"path\",\n            \"url\": \"\.\.\/packages\/'"$package"'\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}\n        \}\n    \]/' composer.json
     fi
 
     composer update
@@ -98,7 +98,7 @@ function navigateToPackage(){
     package="$(inputIsSet "package" "$package")"
     dev
 
-    cd packages
+    cd packages || return
 
     if [ -z "$createPackage" ]; then
         createPackage=false
@@ -116,10 +116,10 @@ function configureServiceProvider(){
     find="boot\(\)\s*\{(?s)\K"
 
     if grep "$search" "$serviceProvider"; then
-        printf "${configure^} are already loaded in boot()... \n"
+        printf "%s are already loaded in boot()... \n" "${configure^}"
     else
-        printf "Configuring $serviceProvider to load $configure... \n"
-        perl -0777 -pi -e "s/$find/$replacement/" $serviceProvider
+        printf "Configuring %s to load $configure... \n" "$serviceProvider"
+        perl -0777 -pi -e "s/$find/$replacement/" "$serviceProvider"
     fi
 }
 
@@ -131,9 +131,9 @@ function packageController(){
     packageDirectoryUpperCase="${package^}"
     controllerName="$(inputIsSet "Controller" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Controllers
-    cd Controllers
+    cd Controllers || return
 
     printf "Creating controller... \n"
 
@@ -240,9 +240,9 @@ function packageFactory(){
     factoryName="$(inputIsSet "Factory" "$componentName")"
     modelName="$(inputIsSet "Model" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Factories
-    cd Factories
+    cd Factories || return
 
     printf "Creating factory... \n"
 
@@ -271,9 +271,9 @@ function packageModel(){
     packageDirectoryUpperCase="${package^}"
     modelName="$(inputIsSet "Model" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Models
-    cd Models
+    cd Models || return
 
     printf "Creating model... \n"
 
@@ -302,9 +302,9 @@ function packageRoute(){
     packageDirectoryUpperCase="${package^}"
     routeName="$(inputIsSet "Route" "routes")"
 
-    cd src
+    cd src || return
     mkdir Routes
-    cd Routes
+    cd Routes || return
 
     printf "Creating route... \n"
 
@@ -322,7 +322,7 @@ EOF
 
     search="loadRoutesFrom"
     configure="routes"
-    replacement='\n        \$this\-\>'$search'\(\_\_DIR\_\_ \. \"\/Routes\/'$routeNameUpperCase'.php\"\)\;'
+    replacement="\n        \$this\-\>$search\(\_\_DIR\_\_ \. \"\/Routes\/'$routeNameUpperCase'.php\"\)\;"
 
     configureServiceProvider "$search" "$configure" "$replacement"
     dev
@@ -336,9 +336,9 @@ function packageSeeder(){
     packageDirectoryUpperCase="${package^}"
     seederName="$(inputIsSet "Seeder" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Seeders
-    cd Seeders
+    cd Seeders || return
 
     printf "Creating seeder... \n"
 
@@ -374,9 +374,9 @@ function packageMigration(){
     packageDirectoryUpperCase="${package^}"
     migrationName="$(inputIsSet "Migration" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Migrations
-    cd Migrations
+    cd Migrations || return
 
     printf "Creating migration... \n"
 
@@ -422,7 +422,7 @@ EOF
 
     search="loadMigrationsFrom"
     configure="migrations"
-    replacement='\n        \$this\-\>'$search'\(\_\_DIR\_\_ \. \"\/Migrations\"\)\;'
+    replacement="\n        \$this\-\>$search\(\_\_DIR\_\_ \. \"\/Migrations\"\)\;"
 
     configureServiceProvider "$search" "$configure" "$replacement"
     dev
@@ -436,9 +436,9 @@ function packageView(){
     packageDirectoryUpperCase="${package^}"
     viewName="$(inputIsSet "View" "$componentName")"
 
-    cd src
+    cd  || return
     mkdir Views
-    cd Views
+    cd Views || return
 
     printf "Creating view... \n"
 
@@ -451,7 +451,7 @@ EOF
 
     search="loadViewsFrom"
     configure="views"
-    replacement='\n        \$this\-\>'$search'(\_\_DIR\_\_ \. \"\/Views\"\, \"'$package'\"\)\;'
+    replacement="\n        \$this\-\>$search(\_\_DIR\_\_ \. \"\/Views\"\, \"'$package'\"\)\;"
 
     configureServiceProvider "$search" "$configure" "$replacement"
     dev
@@ -465,9 +465,9 @@ function packageConfig(){
     packageDirectoryUpperCase="${package^}"
     configName="$(inputIsSet "config file" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Config
-    cd Config
+    cd Config || return
 
     printf "Creating config file... \n"
 
@@ -483,7 +483,7 @@ EOF
 
     search="mergeConfigFrom"
     configure="config files"
-    replacement='\n        \$this\-\>'$search'(\_\_DIR\_\_ \. \"\/Config\"\, \"'$package'\"\)\;'
+    replacement="\n        \$this\-\>$search(\_\_DIR\_\_ \. \"\/Config\"\, \"'$package'\"\)\;"
 
     configureServiceProvider "$search" "$configure" "$replacement"
     dev
@@ -497,9 +497,9 @@ function packageMiddleware(){
     packageDirectoryUpperCase="${package^}"
     middlewareName="$(inputIsSet "middleware" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Middleware
-    cd Middleware
+    cd Middleware || return
 
     printf "Creating middleware... \n"
 }
@@ -512,9 +512,9 @@ function packageTest(){
     packageDirectoryUpperCase="${package^}"
     testName="$(inputIsSet "test" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Tests
-    cd Tests
+    cd Tests || return
 
     printf "Creating middleware... \n"
 }
@@ -527,9 +527,9 @@ function packageComposer(){
     packageDirectoryUpperCase="${package^}"
     composerName="$(inputIsSet "composer" "$componentName")"
 
-    cd src
+    cd src || return
     mkdir Composers
-    cd Composers
+    cd Composers || return
 
     printf "Creating composers... \n"
 }
@@ -541,9 +541,9 @@ function packageAssets(){
     navigateToPackage "$package"
     packageDirectoryUpperCase="${package^}"
 
-    cd src
+    cd src || return
     mkdir Assets
-    cd Assets
+    cd Assets || return
 
     printf "Creating assets... \n"
 
@@ -551,7 +551,7 @@ function packageAssets(){
 
     search="publishes"
     configure="assets"
-    replacement='\n        \$this\-\>'$search'([\_\_DIR\_\_ \. \"\/Assets\" \=\> public_path\(\"'$package'\"\)\]\, \"public\"\)\;'
+    replacement="\n        \$this\-\>$search([\_\_DIR\_\_ \. \"\/Assets\" \=\> public_path\(\"$package\"\)\]\, \"public\"\)\;"
 
     configureServiceProvider "$search" "$configure" "$replacement"
     dev

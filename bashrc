@@ -5,15 +5,15 @@
 #
 # @param folder
 ###
-dev() {
+function dev() {
     folder=$1
     printf "Navigating to Dev root folder... \n"
 
-    cd ~
-    cd $rootdevfolder
+    cd ~ || return
+    cd "$rootdevfolder" || return
 
-    if [ ! -z "$folder" ]; then
-        navigateToProject $project
+    if [ -n "$folder" ]; then
+        navigateToProject "$project"
     fi
 }
 
@@ -27,10 +27,10 @@ export XDEBUG_CONFIG="idekey=VSCODE"
 openEditor() {
     project=$1
 
-    dev
+    dev ""
 
     if [ -d "$project" ]; then
-        printf "Opening $project project in VSC \n"
+        printf "Opening %s project in VSC \n" "$project"
         code "$project"
 
         cd "$project" || exit
@@ -176,8 +176,7 @@ validFolderName() {
     folderType="$(inputType "$folderType")"
 
     while [ ! -d "$folder" ]; do
-        read -p "Please type a valid $folderType name: " folder
-        folder="$folder"
+        read -r -p "Please type a valid $folderType name: " folder
     done
 
     echo "$folder"
@@ -211,8 +210,7 @@ inputIsSet() {
 
     while [ -z "$input" ]; do
 
-        read -p "Please type a valid $inputType name: " input
-        input="$input"
+        read -r -p "Please type a valid $inputType name: " input
     done
 
     echo "$input"
@@ -295,11 +293,11 @@ navigateToFolder() {
     folderType=$3
 
     folderType="$(inputType "$folderType")"
-    createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
+    # createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
     folder="$(folderExists "$folder" "$folderType")"
 
-    if [ ! -z "$folder" ]; then
-        cd $folder
+    if [ -n "$folder" ]; then
+        cd "$folder" || return
     fi
 }
 
@@ -311,12 +309,12 @@ alias logapp='ssh -t {host_name} "tail -f /var/log/mberry/app/error_log"'
 alias logappapi='./docker-compose.sh logs -f app-api'
 
 function startapp() {
-    cd ~/app/ >/dev/null 2>&1
-    ./docker-compose.sh $@ <<EOF
+    cd ~/app/ >/dev/null 2>&1 || return
+    ./docker-compose.sh "$@" <<EOF
 1
 2
 EOF
-    cd - >/dev/null 2>&1
+    cd - >/dev/null 2>&1 || return
 }
 
 alias eks-qa='aws eks --region us-east-1 update-kubeconfig --name AppQA --profile eks-qa; kubectl config set-context --current --namespace=app'
@@ -326,12 +324,12 @@ function dbapp() {
     if [ -z "$db" ]; then
         db="default"
     fi
-    docker exec -it $(docker ps -q --filter="ancestor=app:latest") /bin/bash -c './am artisan db:cli '$db
+    docker exec -it "$(docker ps -q --filter="ancestor=app:latest")" /bin/bash -c './am artisan db:cli '$db
 }
 
 function de() {
     container=$1
-    docker exec -it $container /bin/bash
+    docker exec -it "$container" /bin/bash
 }
 alias addbb='eval `ssh-agent`;ssh-add ~/.ssh/bitbucket'
 function addssh() {

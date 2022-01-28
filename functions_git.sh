@@ -35,7 +35,7 @@ function branchName() {
     currentBranchName="$(getbranchname)"
     if [ "$currentBranchName" = "develop" ]; then
         while [ -z "$branchName" ]; do
-            read -p "Hmm... Looks like you're missing the $branchType branch name. Please enter it: " branchName
+            read -r -p "Hmm... Looks like you're missing the $branchType branch name. Please enter it: " branchName
         done
         branchName="$branchType-$branchName"
     else
@@ -56,8 +56,7 @@ function versionNumber() {
     versionType=$1
     versionNumber=$2
     while [ -z "$versionNumber" ]; do
-        read -p "Hmm... Looks like you're missing the $versionType version number. Please enter it: " versionNumber
-        versionNumber=$versionNumber
+        read -r -p "Hmm... Looks like you're missing the $versionType version number. Please enter it: " versionNumber
     done
     echo "$versionNumber"
 }
@@ -320,7 +319,7 @@ function finishHotfix() {
     # Merge hotfix into release branch
     # Then also merge into develop branch
     if [ -z "$mergeIntoRelease" ]; then
-        read -p "Do you want to merge this hotfix into the release branch as well as the develop branch? (yes/no)" confirmIfWantToMergeToReleaseBranchAlso
+        read -r -p "Do you want to merge this hotfix into the release branch as well as the develop branch? (yes/no)" confirmIfWantToMergeToReleaseBranchAlso
 
         if [ "$confirmIfWantToMergeToReleaseBranchAlso" == "yes" ]; then
             releaseVersion="$(releaseVersionNumber "$3")"
@@ -357,8 +356,7 @@ function gitAddAndCommit() {
 function commitMessage() {
     commitMessage=""
     while [ -z "$commitMessage" ]; do
-        read -p "Please enter your commit message for $branchName: " commitMessage
-        commitMessage="$commitMessage"
+        read -r -p "Please enter your commit message for $branchName: " commitMessage
     done
     echo "$commitMessage"
 }
@@ -463,8 +461,6 @@ function githubCommitMessage() {
 #################
 
 function configureGithub() {
-    configureGithub=false
-    githubConfigured=false
     gitParameter=$1
     tokenType=$2
 
@@ -473,7 +469,7 @@ function configureGithub() {
     fi
 
     while [ -z "$gitParameter" ]; do
-        read -p "Please enter your Github $tokenType authorization token or enter 'ng' to prevent Github synchronization: " token
+        read -r -p "Please enter your Github $tokenType authorization token or enter 'ng' to prevent Github synchronization: " token
         gitParameter=$token
     done
 
@@ -549,14 +545,14 @@ EOF
 
         git init
         git add .
-        commitMessage="$(githubCommitMessage)"
+        commitMessage="$(githubCommitMessage -- *glob*)"
         git commit -m "$commitMessage"
         json="$(gitJson "$project" "$options")"
         # Use Github's API to create a new repo on github.com and 2nd @param as access_token
-        curl https://api.github.com/user/repos?access_token=$git -d $json
+        curl https://api.github.com/user/repos?access_token="$git" -d "$json"
         # Add the newly created github.com repo as the origin to the local repo
-        git remote add origin https://github.com/$github/$project.git
-        gitVersioning $options
+        git remote add origin https://github.com/"$github"/"$project".git
+        gitVersioning "$options"
         # Push local repo to github.com repo
         git push origin master
     fi
@@ -569,17 +565,17 @@ function prepareAndPush() {
     navigateToProject "$project"
     # Preparing Composer.json for production by replacing local path repos with remote repos
     installedPackages=($(grep -Pazo '(?<=\"type\"\:\s\"path\"\,\n\s{12}\"url\"\:\s\"\.\.\/packages\/).*(?=\"\,)' composer.json | tr '\0' '\n'))
-    regexString='s/\"type\"\:\s\"path\"\,\s*?.*?$package\".*?\s*?.*?\s*?.*?\s*?\}/\"type\": \"vcs\",\n            \"url\": \"https:\/\/github.com\/'$github'\/$package.git\"/'
+    regexString="s/\"type\"\:\s\"path\"\,\s*?.*?$package\".*?\s*?.*?\s*?.*?\s*?\}/\"type\": \"vcs\",\n            \"url\": \"https:\/\/github.com\/$github\/$package.git\"/"
     adjustComposerRepositories installedPackages "${regexString}"
     composer update
     git add .
-    commitMessage="$(githubCommitMessage)"
+    commitMessage="$(githubCommitMessage -- *glob*)"
     git commit -m "$commitMessage"
     git push
     # Preparing Composer.json for development by replacing remote repos with local path repos
     installedPackages=($(grep -Pazo '(?<=\"type\"\:\s\"vcs\"\,\n\s{12}\"url\"\:\s\"https\:\/\/github\.com\/michaeljberry\/)(.*?)(?=\.git\")' composer.json | tr '\0' '\n'))
-    regexString='s/\"type\"\:\s\"vcs\"\,\s*?.*?$package\.git\"/\"type\": \"path\",\n            \"url\": \"\.\.\/packages\/$package\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}/'
-    adjustComposerRepositories installedPackages "${regexString}"
+    regexString="s/\"type\"\:\s\"vcs\"\,\s*?.*?$package\.git\"/\"type\": \"path\",\n            \"url\": \"\.\.\/packages\/$package\",\n            \"options\"\: \{\n                \"symlink\"\: true\n            \}/"
+    adjustComposerRepositories "$installedPackages" "${regexString}"
     composer update
 }
 
@@ -589,7 +585,7 @@ function pullGithubRepo() {
 
     project="$(inputIsSet "project" "$project")"
     git="$(configureGithub "$gitParameter")"
-    git clone https://github.com/$github/$project
+    git clone https://github.com/"$github"/"$project"
 }
 
 #################
@@ -620,7 +616,7 @@ function teardownGithub() {
     git="$(configureGithub "$gitParameter")"
 
     if [ "$git" != "ng" ]; then
-        curl -X DELETE -H "Authorization: token $git" https://api.github.com/repos/$github/$project
+        curl -X DELETE -H "Authorization: token $git" https://api.github.com/repos/"$github"/"$project"
     fi
 }
 
