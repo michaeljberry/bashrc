@@ -340,5 +340,4 @@ function addssh() {
     eval "$(ssh-agent)"
     ssh-add "${SSH_DIR}""/$key"
 }
-alias eluma="cd ~/code/insight && .ops/cli/manage.sh"
 alias endoflinelf="find -type f -print0 | xargs -0 dos2unix"
