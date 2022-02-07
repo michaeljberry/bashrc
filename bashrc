@@ -331,12 +331,14 @@ function de() {
     container=$1
     docker exec -it "$container" /bin/bash
 }
-alias addbb='eval `ssh-agent`;ssh-add ~/.ssh/bitbucket'
+alias addbb='eval `ssh-agent`;ssh-add "${SSH_DIR}"/bitbucket'
 function addssh() {
     key=$1
     if [ -z "$key" ]; then
         key="bitbucket"
     fi
     eval "$(ssh-agent)"
-    ssh-add ~/.ssh/"$key"
+    ssh-add "${SSH_DIR}""/$key"
 }
+alias eluma="cd ~/code/insight && .ops/cli/manage.sh"
+alias endoflinelf="find -type f -print0 | xargs -0 dos2unix"
