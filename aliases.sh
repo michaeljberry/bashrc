@@ -15,6 +15,7 @@ alias cll="clear && ls -la"
 alias cls="clear && ls"
 alias ea="vi ~/aliases"
 alias reload="source ~/${BASHFILE}"
+alias updatephp="sudo update-alternatives --config php"
 
 ## Composer
 alias cu="composer update"
@@ -30,9 +31,9 @@ alias phpunit="vendor/bin/phpunit"
 alias pu="phpunit"
 alias puf="phpunit --filter"
 alias pud="phpunit --debug"
-puts(){
-    testsuite=$1
-    pu --testsuite=$1
+puts() {
+  testsuite=$1
+  pu --testsuite=$1
 }
 alias puxi="phpunit --exclude-group integration"
 
