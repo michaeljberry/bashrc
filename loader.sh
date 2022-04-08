@@ -9,7 +9,7 @@ export $(cat ~/bashrc/.env 2>/dev/null | grep -v '^#' | xargs)
 set +a
 echo "$HOME_DIR"
 
-BASHFILE="bashrc/bashrc"
+BASHFILE="bashrc"
 export XDEBUG_CONFIG="idekey=VSCODE"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
