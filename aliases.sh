@@ -15,7 +15,7 @@ alias cll="clear && ls -la"
 alias cls="clear && ls"
 alias ea="vi ~/aliases"
 alias reload="source ~/${BASHFILE}"
-alias updatephp="sudo update-alternatives --config php"
+alias switchphp="sudo update-alternatives --config php"
 
 ## Composer
 alias cu="composer update"
