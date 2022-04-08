@@ -15,15 +15,15 @@ source ~/functions_laravel_package.sh
 # @param folder
 ###
 dev() {
-    folder=$1
-    printf "Navigating to Dev root folder... \n"
+  folder=$1
+  printf "Navigating to Dev root folder... \n"
 
-    cd ~
-    cd $rootdevfolder
+  cd ~
+  cd $rootdevfolder
 
-    if [ ! -z "$folder" ]; then
-        navigateToProject $project
-    fi
+  if [ ! -z "$folder" ]; then
+    navigateToProject $project
+  fi
 }
 
 export XDEBUG_CONFIG="idekey=VSCODE"
@@ -34,16 +34,16 @@ export XDEBUG_CONFIG="idekey=VSCODE"
 # @param project
 ###
 openEditor() {
-    project=$1
+  project=$1
 
-    dev
+  dev
 
-    if [ -d "$project" ]; then
-        printf "Opening $project project in VSC \n"
-        code "$project"
+  if [ -d "$project" ]; then
+    printf "Opening $project project in VSC \n"
+    code "$project"
 
-        cd "$project" || exit
-    fi
+    cd "$project" || exit
+  fi
 }
 
 ###
@@ -66,13 +66,13 @@ openEditor() {
 ###
 
 inputType() {
-    inputType=$1
+  inputType=$1
 
-    if [ -z "$inputType" ]; then
-        inputType="folder"
-    fi
+  if [ -z "$inputType" ]; then
+    inputType="folder"
+  fi
 
-    echo "$inputType"
+  echo "$inputType"
 }
 
 ###
@@ -92,13 +92,13 @@ inputType() {
 ###
 
 shouldFolderBeCreated() {
-    shouldFolderBeCreated=$1
+  shouldFolderBeCreated=$1
 
-    if [ -z "$shouldFolderBeCreated" ]; then
-        shouldFolderBeCreated=false
-    fi
+  if [ -z "$shouldFolderBeCreated" ]; then
+    shouldFolderBeCreated=false
+  fi
 
-    echo "$shouldFolderBeCreated"
+  echo "$shouldFolderBeCreated"
 }
 
 ###
@@ -118,12 +118,12 @@ shouldFolderBeCreated() {
 ###
 
 createFolder() {
-    folder=$1
+  folder=$1
 
-    folder="$(inputIsSet "folder" "$folder")"
-    mkdir "$folder"
+  folder="$(inputIsSet "folder" "$folder")"
+  mkdir "$folder"
 
-    echo "$folder"
+  echo "$folder"
 }
 
 ###
@@ -147,15 +147,15 @@ createFolder() {
 ###
 
 createFolderIfNeeded() {
-    folder=$1
-    shouldFolderBeCreated=$2
+  folder=$1
+  shouldFolderBeCreated=$2
 
-    shouldFolderBeCreated="$(shouldFolderBeCreated "$shouldFolderBeCreated")"
+  shouldFolderBeCreated="$(shouldFolderBeCreated "$shouldFolderBeCreated")"
 
-    if [ "$shouldFolderBeCreated" = "true" ]; then
-        folder="$(createFolder "$folder")"
-        echo "$folder"
-    fi
+  if [ "$shouldFolderBeCreated" = "true" ]; then
+    folder="$(createFolder "$folder")"
+    echo "$folder"
+  fi
 }
 
 ###
@@ -179,17 +179,17 @@ createFolderIfNeeded() {
 ###
 
 validFolderName() {
-    folder=$1
-    folderType=$2
+  folder=$1
+  folderType=$2
 
-    folderType="$(inputType "$folderType")"
+  folderType="$(inputType "$folderType")"
 
-    while [ ! -d "$folder" ]; do
-        read -p "Please type a valid $folderType name: " folder
-        folder="$folder"
-    done
+  while [ ! -d "$folder" ]; do
+    read -p "Please type a valid $folderType name: " folder
+    folder="$folder"
+  done
 
-    echo "$folder"
+  echo "$folder"
 }
 
 ###
@@ -213,18 +213,18 @@ validFolderName() {
 ###
 
 inputIsSet() {
-    inputType=$1
-    input=$2
+  inputType=$1
+  input=$2
 
-    inputType="$(inputType "$inputType")"
+  inputType="$(inputType "$inputType")"
 
-    while [ -z "$input" ]; do
+  while [ -z "$input" ]; do
 
-        read -p "Please type a valid $inputType name: " input
-        input="$input"
-    done
+    read -p "Please type a valid $inputType name: " input
+    input="$input"
+  done
 
-    echo "$input"
+  echo "$input"
 }
 
 ###
@@ -254,13 +254,13 @@ inputIsSet() {
 ###
 
 folderExists() {
-    folder=$1
-    folderType=$2
+  folder=$1
+  folderType=$2
 
-    folderType="$(inputType "$folderType")"
-    folder="$(validFolderName "$folder" "$folderType")"
+  folderType="$(inputType "$folderType")"
+  folder="$(validFolderName "$folder" "$folderType")"
 
-    echo "$folder"
+  echo "$folder"
 }
 
 ###
@@ -299,17 +299,17 @@ folderExists() {
 ###
 
 navigateToFolder() {
-    folder=$1
-    shouldFolderBeCreated=$2
-    folderType=$3
+  folder=$1
+  shouldFolderBeCreated=$2
+  folderType=$3
 
-    folderType="$(inputType "$folderType")"
-    createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
-    folder="$(folderExists "$folder" "$folderType")"
+  folderType="$(inputType "$folderType")"
+  createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
+  folder="$(folderExists "$folder" "$folderType")"
 
-    if [ ! -z "$folder" ]; then
-        cd $folder
-    fi
+  if [ ! -z "$folder" ]; then
+    cd $folder
+  fi
 }
 
 alias reclaimdocker='docker run --privileged --pid=host docker/desktop-reclaim-space && docker rm $(docker ps -q --filter="ancestor=docker/desktop-reclaim-space")'
@@ -320,34 +320,34 @@ alias logapp='ssh -t {host_name} "tail -f /var/log/mberry/app/error_log"'
 alias logappapi='./docker-compose.sh logs -f app-api'
 
 function startapp() {
-    cd ~/app/ >/dev/null 2>&1
-    ./docker-compose.sh $@ <<EOF
+  cd ~/app/ >/dev/null 2>&1
+  ./docker-compose.sh $@ <<EOF
 1
 2
 EOF
-    cd - >/dev/null 2>&1
+  cd - >/dev/null 2>&1
 }
 
 alias eks-qa='aws eks --region us-east-1 update-kubeconfig --name AppQA --profile eks-qa; kubectl config set-context --current --namespace=app'
 alias eks-prod='aws eks --region us-east-1 update-kubeconfig --name AppProd --profile eks-prod; kubectl config set-context --current --namespace=app'
 function dbapp() {
-    db=$1
-    if [ -z "$db" ]; then
-        db="default"
-    fi
-    docker exec -it $(docker ps -q --filter="ancestor=app:latest") /bin/bash -c './am artisan db:cli '$db
+  db=$1
+  if [ -z "$db" ]; then
+    db="default"
+  fi
+  docker exec -it $(docker ps -q --filter="ancestor=app:latest") /bin/bash -c './am artisan db:cli '$db
 }
 
 function de() {
-    container=$1
-    docker exec -it $container /bin/bash
+  container=$1
+  docker exec -it $container /bin/bash
 }
 alias addbb='eval `ssh-agent`;ssh-add ~/.ssh/bitbucket'
 function addssh() {
-    key=$1
-    if [ -z "$key" ]; then
-        key="bitbucket"
-    fi
-    eval ssh-agent
-    ssh-add ~/.ssh/"$key"
+  key=$1
+  if [ -z "$key" ]; then
+    key="bitbucket"
+  fi
+  eval ssh-agent
+  ssh-add ~/.ssh/"$key"
 }

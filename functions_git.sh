@@ -10,7 +10,8 @@ alias pp="prepareAndPush"
 #
 # @param version
 ###
-function gt() {
+
+function gt(){
     version=$1
     git tag -a -m "Tag version $version" "v$version"
 }
