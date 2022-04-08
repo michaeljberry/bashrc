@@ -5,16 +5,16 @@
 #
 # @param folder
 ###
-function dev() {
-    folder=$1
-    printf "Navigating to Dev root folder... \n"
+dev() {
+  folder=$1
+  printf "Navigating to Dev root folder... \n"
 
-    cd ~ || return
-    cd "$rootdevfolder" || return
+  cd ~
+  cd $rootdevfolder
 
-    if [ -n "$folder" ]; then
-        navigateToProject "$project"
-    fi
+  if [ ! -z "$folder" ]; then
+    navigateToProject $project
+  fi
 }
 
 export XDEBUG_CONFIG="idekey=VSCODE"
@@ -27,11 +27,11 @@ export XDEBUG_CONFIG="idekey=VSCODE"
 openEditor() {
   project=$1
 
-    dev ""
+  dev
 
-    if [ -d "$project" ]; then
-        printf "Opening %s project in VSC \n" "$project"
-        code "$project"
+  if [ -d "$project" ]; then
+    printf "Opening $project project in VSC \n"
+    code "$project"
 
     cd "$project" || exit
   fi
@@ -175,9 +175,10 @@ validFolderName() {
 
   folderType="$(inputType "$folderType")"
 
-    while [ ! -d "$folder" ]; do
-        read -r -p "Please type a valid $folderType name: " folder
-    done
+  while [ ! -d "$folder" ]; do
+    read -p "Please type a valid $folderType name: " folder
+    folder="$folder"
+  done
 
   echo "$folder"
 }
@@ -210,8 +211,9 @@ inputIsSet() {
 
   while [ -z "$input" ]; do
 
-        read -r -p "Please type a valid $inputType name: " input
-    done
+    read -p "Please type a valid $inputType name: " input
+    input="$input"
+  done
 
   echo "$input"
 }
@@ -292,13 +294,13 @@ navigateToFolder() {
   shouldFolderBeCreated=$2
   folderType=$3
 
-    folderType="$(inputType "$folderType")"
-    # createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
-    folder="$(folderExists "$folder" "$folderType")"
+  folderType="$(inputType "$folderType")"
+  createdFolder="$(createFolderIfNeeded "$folder" "$shouldFolderBeCreated")"
+  folder="$(folderExists "$folder" "$folderType")"
 
-    if [ -n "$folder" ]; then
-        cd "$folder" || return
-    fi
+  if [ ! -z "$folder" ]; then
+    cd $folder
+  fi
 }
 
 alias reclaimdocker='docker run --privileged --pid=host docker/desktop-reclaim-space && docker rm $(docker ps -q --filter="ancestor=docker/desktop-reclaim-space")'
@@ -309,35 +311,35 @@ alias logapp='ssh -t {host_name} "tail -f /var/log/mberry/app/error_log"'
 alias logappapi='./docker-compose.sh logs -f app-api'
 
 function startapp() {
-    cd ~/app/ >/dev/null 2>&1 || return
-    ./docker-compose.sh "$@" <<EOF
+  cd ~/app/ >/dev/null 2>&1
+  ./docker-compose.sh $@ <<EOF
 1
 2
 EOF
-    cd - >/dev/null 2>&1 || return
+  cd - >/dev/null 2>&1
 }
 
 alias eks-qa='aws eks --region us-east-1 update-kubeconfig --name AppQA --profile eks-qa; kubectl config set-context --current --namespace=app'
 alias eks-prod='aws eks --region us-east-1 update-kubeconfig --name AppProd --profile eks-prod; kubectl config set-context --current --namespace=app'
 function dbapp() {
-    db=$1
-    if [ -z "$db" ]; then
-        db="default"
-    fi
-    docker exec -it "$(docker ps -q --filter="ancestor=app:latest")" /bin/bash -c './am artisan db:cli '$db
+  db=$1
+  if [ -z "$db" ]; then
+    db="default"
+  fi
+  docker exec -it $(docker ps -q --filter="ancestor=app:latest") /bin/bash -c './am artisan db:cli '$db
 }
 
 function de() {
-    container=$1
-    docker exec -it "$container" /bin/bash
+  container=$1
+  docker exec -it $container /bin/bash
 }
 alias addbb='eval `ssh-agent`;ssh-add "${SSH_DIR}"/bitbucket'
 function addssh() {
-    key=$1
-    if [ -z "$key" ]; then
-        key="bitbucket"
-    fi
-    eval "$(ssh-agent)"
-    ssh-add "${SSH_DIR}""/$key"
+  key=$1
+  if [ -z "$key" ]; then
+    key="bitbucket"
+  fi
+  eval ssh-agent
+  ssh-add ~/.ssh/"$key"
 }
 alias endoflinelf="find -type f -print0 | xargs -0 dos2unix"

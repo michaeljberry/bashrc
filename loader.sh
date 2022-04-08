@@ -9,13 +9,13 @@ export $(cat ~/bashrc/.env 2>/dev/null | grep -v '^#' | xargs)
 set +a
 echo "$HOME_DIR"
 
-BASHFILE="bashrc"
+BASHFILE="bashrc/bashrc"
 export XDEBUG_CONFIG="idekey=VSCODE"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-	echo "Loading MAC specific scripts"
-	source "${HOME_DIR}"/functions_mac.sh
-	BASHFILE=".bash_profile"
+  echo "Loading MAC specific scripts"
+  source "${HOME_DIR}"/functions_mac.sh
+  BASHFILE=".bash_profile"
 fi
 
 echo "Loading bash aliases and functions"
