@@ -1,1 +1,1 @@
-alias gettheweather="curl wttr.in"
+#!/bin/bash
