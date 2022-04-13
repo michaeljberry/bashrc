@@ -22,11 +22,11 @@ alias pamal="php artisan make:listener"
 alias pamama="php artisan make:mail"
 alias pamamid="php artisan make:middleware"
 alias pamami="php artisan make:migration"
-alias pamamo="php artisan make:model" #Use '/' to place model in sub-folder
-alias pamamoc="php artisan make:model -c" #controller
-alias pamamorc="php artisan make:model -rc" #resource controller
-alias pamamom="php artisan make:model -m" #migration
-alias pamamomc="php artisan make:model -mc" #migration + controller
+alias pamamo="php artisan make:model"         #Use '/' to place model in sub-folder
+alias pamamoc="php artisan make:model -c"     #controller
+alias pamamorc="php artisan make:model -rc"   #resource controller
+alias pamamom="php artisan make:model -m"     #migration
+alias pamamomc="php artisan make:model -mc"   #migration + controller
 alias pamamomrc="php artisan make:model -mrc" #migration + resource controller
 alias paman="php artisan make:notification"
 alias pamapo="php artisan make:policy"
@@ -66,4 +66,4 @@ alias paup="php artisan up"
 alias pavp="php artisan vendor:publish"
 alias pavpf="php artisan vendor:publish --tag=public --force"
 
-alias sail="./vendor/bin/sail up"
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
