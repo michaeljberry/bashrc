@@ -339,7 +339,7 @@ function addssh() {
   if [ -z "$key" ]; then
     key="bitbucket"
   fi
-  eval ssh-agent
+  eval $(ssh-agent -s)
   ssh-add ~/.ssh/"$key"
 }
 alias endoflinelf="find -type f -print0 | xargs -0 dos2unix"
