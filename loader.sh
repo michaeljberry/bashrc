@@ -45,5 +45,8 @@ source "${HOME_DIR}"/functions_laravel_package.sh
 echo "Loading general aliases..."
 source "${HOME_DIR}"/aliases.sh
 
+echo "Loading general functions..."
+source "${HOME_DIR}"/functions.sh
+
 echo "Loading random aliases..."
 source "${HOME_DIR}"/random.sh
